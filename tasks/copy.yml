@@ -1,0 +1,16 @@
+---
+# Copy apereo-cas war-file to target system
+# This use central store, provided by Silpion.lib role
+
+- name: Create directories to keep archive files
+  include: "{{ role_path }}/../silpion.lib/tasks/datapersistency.yml"
+
+- name: Copy war-file to target system
+  include: "{{ role_path }}/../silpion.lib/tasks/copy.yml"
+  vars:
+    filename: "{{ apereo_cas_war }}"
+
+# Set fact to find war-file on remote host
+- set_fact:
+    apereo_cas_war_path: "{{ lib_persistent_data_path_remote }}/{{ apereo_cas_war }}"
+

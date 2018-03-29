@@ -1,0 +1,51 @@
+---
+# Configure standalone Apereo CAS server
+# FIXME: should be separated file for each supported container
+
+- name: Create directories for standalone Apereo CAS server
+  with_items:
+    - "{{ apereo_cas_etc }}"
+    - "{{ apereo_cas_logs }}"
+  file:
+    name: "{{ item }}"
+    state: directory
+    owner: "{{ apereo_cas_user }}"
+    group: "{{ apereo_cas_group }}"
+    mode: 0750
+
+- name: Create symlink for log directories
+  file:
+    src: "{{ apereo_cas_logs }}"
+    dest: "{{ apereo_cas_etc }}/logs"
+    state: link
+    owner: "{{ apereo_cas_user }}"
+    group: "{{ apereo_cas_group }}"
+
+- name: Create configuration file for standalone Apereo CAS server
+  template:
+    src: "cas.standalone.properties.j2"
+    dest: "{{ apereo_cas_etc }}/{{ apereo_cas_properties }}"
+    owner: "{{ apereo_cas_user }}"
+    group: "{{ apereo_cas_group }}"
+    mode: 0640
+    backup: yes
+
+- name: Create standalone keystore
+  when: not _apereo_cas_keystore.stat.exists
+  command: >
+     {{ apereo_cas_java_home }}/bin/keytool -genkey -noprompt -alias {{ apereo_cas_service }} -keyalg RSA -validity 3650 -keysize 2048 -keystore {{ apereo_cas_keystore }} -keypass {{ apereo_cas_server_ssl_password }} -storepass {{ apereo_cas_server_ssl_password }} -dname "{{ apereo_cas_dname }}" -ext san=dns:{{ apereo_cas_server_name }}
+  args:
+    creates: "{{ apereo_cas_keystore }}"
+
+- name: Export servers certificate from keystore
+  when: not _apereo_cas_keystore.stat.exists
+  command: >
+     {{ apereo_cas_java_home }}/bin/keytool -export -noprompt -file {{ apereo_cas_etc }}/{{ apereo_cas_service }}.crt -alias {{ apereo_cas_service }} -keystore {{ apereo_cas_keystore }} -keypass {{ apereo_cas_server_ssl_password }} -storepass {{ apereo_cas_server_ssl_password }} 
+  args:
+    creates: "{{ apereo_cas_etc }}/{{ apereo_cas_service }}.crt"
+
+- name: Import servers certificate into system JDK trusted key store
+  when: not _apereo_cas_keystore.stat.exists
+  command: >
+     {{ apereo_cas_java_home }}/bin/keytool -import  -noprompt -file {{ apereo_cas_etc }}/{{ apereo_cas_service }}.crt -alias {{ apereo_cas_service }} -keystore {{ apereo_cas_java_home }}/jre/lib/security/cacerts
+

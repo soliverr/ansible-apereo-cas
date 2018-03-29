@@ -1,0 +1,50 @@
+---
+# Defaults for apereo-cas
+
+# Degault user and group
+apereo_cas_user: 'root'
+apereo_cas_group: 'root'
+
+# Default service name
+apereo_cas_service: 'cas'
+
+# Default installation mode
+# FIXME: add support for tomcat, jetty, undertow, etc.
+apereo_cas_container: 'standalone'
+
+# Default Home Dir
+apereo_cas_home: "/opt/apereo/{{ apereo_cas_service }}"
+
+# Default Log Dir
+apereo_cas_logs: "/var/log/apereo/{{ apereo_cas_service }}"
+
+# Default Configuration Dir
+apereo_cas_etc: "/etc/apereo/{{ apereo_cas_service }}"
+
+# Default name for cas.properties
+apereo_cas_properties: "cas.{{ apereo_cas_container }}.properties"
+
+# Default JAVA_HOME JDK
+apereo_cas_java_home: "/usr/lib/jvm/default-java"
+
+# Default War-file to deploy
+apereo_cas_war: cas.war
+apereo_cas_war_path: "/tmp/{{ apereo_cas_war }}"
+
+# Default is diasable upgrade CAS service
+apereo_cas_upgrade: false
+
+# Deafult path to keystore
+apereo_cas_keystore: "{{ apereo_cas_etc }}/thekeystore"
+
+#
+# Defaults for Apereo CAS server
+#
+apereo_cas_server_name: 'localhost'
+apereo_cas_server_port: 8443
+apereo_cas_server_context_path: "/{{ apereo_cas_service }}"
+# SSL
+apereo_cas_server_ssl_keyStore: "file:{{ apereo_cas_keystore }}"
+apereo_cas_server_ssl_password: 'changeit'
+apereo_cas_dname: "CN={{ apereo_cas_server_name }}, OU=Unknown, o=Unknown, L=Unknown, S=Unknown, C=UN"
+

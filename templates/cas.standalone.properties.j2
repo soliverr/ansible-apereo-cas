@@ -1,0 +1,31 @@
+{{ ansible_managed | comment }}
+
+# Identify CAS Server 
+server.name=https://{{ apereo_cas_server_name|default(ansible_fqdn) }}:${server.port}
+server.prefix=${server.name}/${server.contextPath}
+
+server.contextPath={{ apereo_cas_server_context_path|default('/cas') }}
+
+# By default and if you remove this setting, CAS runs on port 8080
+server.port={{ apereo_cas_server_port|default(8443) }}
+
+# To disable SSL configuration, comment out the following settings or set to blank values.
+server.ssl.keyStore={{ apereo_cas_server_ssl_keyStore }}
+server.ssl.keyStorePassword={{ apereo_cas_server_ssl_password }}
+server.ssl.keyPassword={{ apereo_cas_server_ssl_password }}
+# server.ssl.ciphers=
+# server.ssl.clientAuth=
+# server.ssl.enabled=
+# server.ssl.keyAlias=
+# server.ssl.keyStoreProvider=
+# server.ssl.keyStoreType=
+# server.ssl.protocol=
+# server.ssl.trustStore=
+# server.ssl.trustStorePassword=
+# server.ssl.trustStoreProvider=
+# server.ssl.trustStoreType=
+
+server.maxHttpHeaderSize=2097152
+server.useForwardHeaders=true
+server.connectionTimeout=20000
+

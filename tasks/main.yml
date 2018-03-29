@@ -1,0 +1,23 @@
+---
+# tasks file for apereo-cas
+
+- include: prepare.yml
+  tags: apereo-cas,apereo-cas-configure,apereo-cas-deploy
+  become: true
+
+- include: copy.yml
+  tags: apereo-cas,apereo-cas-deploy
+  become: true
+
+- include: deploy.yml
+  tags: apereo-cas,apereo-cas-deploy
+  become: true
+
+- include: configure.yml
+  tags: apereo-cas,apereo-cas-configure
+  become: true
+
+- include: services.yml
+  tags: apereo-cas,apereo-cas-configure
+  become: true
+

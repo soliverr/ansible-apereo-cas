@@ -1,0 +1,16 @@
+[Unit]
+Description=Apereo CAS standalone server with embedded servlet container 
+After=syslog.target network.target
+
+[Service]
+Type=simple
+Environment=JAVA_HOME={{ apereo_cas_java_home }} 
+Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
+WorkingDirectory={{ apereo_cas_home }} 
+ExecStart={{ apereo_cas_java_home }}/bin/java -jar {{ apereo_cas_war }} --cas.standalone.config={{ apereo_cas_etc }} --cas.standalone.config.file={{ apereo_cas_etc }}/{{ apereo_cas_properties }}
+#-Dlog4j.configurationFile=file:/etc/cas/log4j2.xml -jar target/cas.war --cas.standalone.config.file=/etc/cas/cas.properties 
+User={{ apereo_cas_user }}
+Group={{ apereo_cas_group }}
+SuccessExitStatus=143
+ExecStop=/bin/kill -s TERM $MAINPID
+PrivateTmp=true

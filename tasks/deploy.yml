@@ -1,0 +1,38 @@
+---
+# Install or upgrade standalone Apereo CAS
+# FIXME: should be different deploy files for each CAS container
+
+- name: Create HOME directory for Apereo CAS standalone server
+  when:  not _apereo_cas_war.stat.exists
+  file:
+    name: "{{ apereo_cas_home }}"
+    state: directory
+    owner: "{{ apereo_cas_user }}"
+    group: "{{ apereo_cas_group }}"
+    mode: 0750
+
+- name: Stop Apereo CAS standalone service
+  when: _apereo_cas_war.stat.exists and apereo_cas_upgrade
+  service:
+    name: "{{ apereo_cas_service }}"
+    state: stopped
+
+- name: Upgrade standalone Apereo CAS server
+  when: _apereo_cas_war.stat.exists and apereo_cas_upgrade
+  copy:
+    src: "{{ apereo_cas_war_path }}"
+    dest: "{{ apereo_cas_home }}/{{ apereo_cas_war }}"
+    owner: "{{ apereo_cas_user }}"
+    group: "{{ apereo_cas_group }}"
+    mode: 0644
+
+- name: Install standalone Apereo CAS server
+  when: not _apereo_cas_war.stat.exists
+  copy:
+    src: "{{ apereo_cas_war_path }}"
+    dest: "{{ apereo_cas_home }}/{{ apereo_cas_war }}"
+    owner: "{{ apereo_cas_user }}"
+    group: "{{ apereo_cas_group }}"
+    mode: 0644
+    remote_src: yes
+

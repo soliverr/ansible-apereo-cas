@@ -1,0 +1,6 @@
+---
+- name: restart {{ apereo_cas_service }}
+  service: name={{ apereo_cas_service }} state=restarted
+
+- name: reload systemd
+  command: systemctl daemon-reload

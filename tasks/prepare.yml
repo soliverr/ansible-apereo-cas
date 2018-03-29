@@ -1,0 +1,13 @@
+---
+# Prepare tasks for apereo-cas
+
+- name: Check if standalone Apereo CAS already exists
+  when: apereo_cas_container == 'standalone'
+  stat: path="{{ apereo_cas_home }}/{{ apereo_cas_war }}"
+  register: _apereo_cas_war
+
+- name: Check if keystore already exists
+  when: apereo_cas_container == 'standalone'
+  stat: path="{{ apereo_cas_keystore }}"
+  register: _apereo_cas_keystore
+
