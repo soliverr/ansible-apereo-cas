@@ -13,18 +13,27 @@
     group: "{{ apereo_cas_group }}"
     mode: 0750
 
-- name: Create symlink for log directories
-  file:
-    src: "{{ apereo_cas_logs }}"
-    dest: "{{ apereo_cas_etc }}/logs"
-    state: link
-    owner: "{{ apereo_cas_user }}"
-    group: "{{ apereo_cas_group }}"
+#- name: Create symlink for log directories
+#  file:
+#    src: "{{ apereo_cas_logs }}"
+#    dest: "{{ apereo_cas_etc }}/logs"
+#    state: link
+#    owner: "{{ apereo_cas_user }}"
+#    group: "{{ apereo_cas_group }}"
 
 - name: Create configuration file for standalone Apereo CAS server
   template:
     src: "cas.standalone.properties.j2"
     dest: "{{ apereo_cas_etc }}/{{ apereo_cas_properties }}"
+    owner: "{{ apereo_cas_user }}"
+    group: "{{ apereo_cas_group }}"
+    mode: 0640
+    backup: yes
+
+- name: Create logger configuration file for standalone Apereo CAS server
+  template:
+    src: "log4j2.xml.j2"
+    dest: "{{ apereo_cas_etc }}/{{ apereo_cas_logger_properties }}"
     owner: "{{ apereo_cas_user }}"
     group: "{{ apereo_cas_group }}"
     mode: 0640

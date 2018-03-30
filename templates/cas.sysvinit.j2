@@ -33,7 +33,7 @@ CAS_USER="${CAS_USER:-{{ apereo_cas_user }}}"
 CAS_GROUP="${CAS_GROUP:-{{ apereo_cas_group }}}"
 
 PROCESS_STRING="^.*-jar\s+{{ apereo_cas_home }}/{{ apereo_cas_war }}.*"
-PROGRAM_START="$JAVA_HOME/bin/java -jar {{ apereo_cas_home }}/{{ apereo_cas_war }} --cas.standalone.config={{ apereo_cas_etc }} --cas.standalone.config.file={{ apereo_cas_etc }}/{{ apereo_cas_properties }}"
+PROGRAM_START="$JAVA_HOME/bin/java -Dlog4j.configurationFile={{ apereo_cas_etc }}/{{ apereo_cas_logger_properties }} -jar {{ apereo_cas_home }}/{{ apereo_cas_war }} --cas.standalone.config={{ apereo_cas_etc }} --cas.standalone.config.file={{ apereo_cas_etc }}/{{ apereo_cas_properties }}"
 
 
 RETVAL="0"
@@ -55,7 +55,7 @@ start() {
             exit
         fi
         echo -n $"Starting $SERVICE_NAME ... "
-        echo "`date` Starting $SERVICE_NAME ... " >> $OUT_FILE 2>&1
+        echo "`date` Starting $SERVICE_NAME ... " > $OUT_FILE 2>&1
 
         [ "$(id -nu 2>/dev/null)" = "root" ] && chown $CAS_USER:$CAS_GROUP $OUT_FILE
 

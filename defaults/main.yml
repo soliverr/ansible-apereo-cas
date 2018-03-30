@@ -23,6 +23,7 @@ apereo_cas_etc: "/etc/apereo/{{ apereo_cas_service }}"
 
 # Default name for cas.properties
 apereo_cas_properties: "cas.{{ apereo_cas_container }}.properties"
+apereo_cas_logger_properties: "log4j2.{{ apereo_cas_container }}.xml"
 
 # Default JAVA_HOME JDK
 apereo_cas_java_home: "/usr/lib/jvm/default-java"
@@ -43,8 +44,37 @@ apereo_cas_keystore: "{{ apereo_cas_etc }}/thekeystore"
 apereo_cas_server_name: 'localhost'
 apereo_cas_server_port: 8443
 apereo_cas_server_context_path: "/{{ apereo_cas_service }}"
+#
 # SSL
+#
 apereo_cas_server_ssl_keyStore: "file:{{ apereo_cas_keystore }}"
 apereo_cas_server_ssl_password: 'changeit'
 apereo_cas_dname: "CN={{ apereo_cas_server_name }}, OU=Unknown, o=Unknown, L=Unknown, S=Unknown, C=UN"
-
+#
+# Log levels
+#
+apereo_cas_loglevel: 'warn'
+#
+# Support LDAP Authentication
+#
+apereo_cas_ldap_type: 'DIRECT'
+apereo_cas_ldap_url: 'ldap://localhost:389'
+apereo_cas_ldap_connectionStrategy: 'DEFAULT'
+apereo_cas_ldap_useSsl: 'false'
+apereo_cas_ldap_useStartTls: 'false'
+apereo_cas_ldap_connectTimeout: 3000
+apereo_cas_ldap_baseDn: 'dc=no_domain'
+apereo_cas_ldap_userFilter: 'cn={user}'
+apereo_cas_ldap_subtreeSearch: 'true'
+apereo_cas_ldap_bindDn: 'cn=Manager,dc=no_domain'
+apereo_cas_ldap_bindCredential: 'Password'
+apereo_cas_ldap_poolPassivator: 'NONE'
+apereo_cas_ldap_minPoolSize: 3
+apereo_cas_ldap_maxPoolSize: 10
+apereo_cas_ldap_validateOnCheckout: 'true'
+apereo_cas_ldap_validatePeriodically: 'true'
+apereo_cas_ldap_validatePeriod: 600
+apereo_cas_ldap_validateTimeout: 5000
+apereo_cas_ldap_dnFormat: 'cn=%s,ou=people,dc=no_domain'
+apereo_cas_ldap_enhanceWithEntryResolver: 'true'
+apereo_cas_ldap_principalAttributePassword: 'password'

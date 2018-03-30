@@ -29,3 +29,70 @@ server.maxHttpHeaderSize=2097152
 server.useForwardHeaders=true
 server.connectionTimeout=20000
 
+#
+# Users Authentication
+#
+cas.authn.accept.users=
+# cas.authn.accept.name=
+# cas.authn.accept.credentialCriteria=
+
+# cas.authn.accept.passwordEncoder.type=NONE|DEFAULT|STANDARD|BCRYPT|SCRYPT|PBKDF2
+# cas.authn.accept.passwordEncoder.characterEncoding=
+# cas.authn.accept.passwordEncoder.encodingAlgorithm=
+# cas.authn.accept.passwordEncoder.secret=
+# cas.authn.accept.passwordEncoder.strength=16
+
+# cas.authn.accept.principalTransformation.pattern=(.+)@example.org
+# cas.authn.accept.principalTransformation.groovy.location=file:///etc/cas/config/principal.groovy
+# cas.authn.accept.principalTransformation.suffix=
+# cas.authn.accept.principalTransformation.caseConversion=NONE|UPPERCASE|LOWERCASE
+# cas.authn.accept.principalTransformation.prefix=
+
+{% if apereo_cas_ldap is defined %}
+#
+# LDAP Authentication
+#
+# AD|AUTHENTICATED|DIRECT|ANONYMOUS
+cas.authn.ldap[0].type={{ apereo_cas_ldap.type|default(apereo_cas_ldap_type) }}
+# ldaps://ldap1.example.edu ldaps://ldap2.example.edu
+cas.authn.ldap[0].ldapUrl={{ apereo_cas_ldap.url|default(apereo_cas_ldap_url) }}
+cas.authn.ldap[0].connectionStrategy={{ apereo_cas_ldap.connectionStrategy|default(apereo_cas_ldap_connectionStrategy) }}
+cas.authn.ldap[0].useSsl={{ apereo_cas_ldap.useSsl|default(apereo_cas_ldap_useSsl) }}
+cas.authn.ldap[0].useStartTls={{ apereo_cas_ldap.useStartTls|default(apereo_cas_ldap_useStartTls) }}
+cas.authn.ldap[0].connectTimeout={{ apereo_cas_ldap.connectTimeout|default(apereo_cas_ldap_connectTimeout) }}
+cas.authn.ldap[0].baseDn={{ apereo_cas_ldap.baseDn|default(apereo_cas_ldap_baseDn) }}
+cas.authn.ldap[0].userFilter={{ apereo_cas_ldap.userFilter|default(apereo_cas_ldap_userFilter) }}
+cas.authn.ldap[0].subtreeSearch={{ apereo_cas_ldap.subtreeSearch|default(apereo_cas_ldap_subtreeSearch) }}
+cas.authn.ldap[0].bindDn={{ apereo_cas_ldap.bindDn|default(apereo_cas_ldap_bindDn) }}
+cas.authn.ldap[0].bindCredential={{ apereo_cas_ldap.bindCredential|default(apereo_cas_ldap_bindCredential) }}
+#
+cas.authn.ldap[0].enhanceWithEntryResolver={{ apereo_cas_ldap.enhanceWithEntryResolver|default(apereo_cas_ldap_enhanceWithEntryResolver) }}
+cas.authn.ldap[0].dnFormat={{ apereo_cas_ldap.dnFormat|default(apereo_cas_ldap_dnFormat) }}
+cas.authn.ldap[0].principalAttributePassword={{ apereo_cas_ldap.principalAttributePassword|default(apereo_cas_ldap_principalAttributePassword) }}
+#
+# cas.authn.ldap[0].saslMechanism=GSSAPI|DIGEST_MD5|CRAM_MD5|EXTERNAL
+# cas.authn.ldap[0].saslRealm=EXAMPLE.COM
+# cas.authn.ldap[0].saslAuthorizationId=
+# cas.authn.ldap[0].saslMutualAuth=
+# cas.authn.ldap[0].saslQualityOfProtection=
+#
+# cas.authn.ldap[0].trustCertificates=
+# cas.authn.ldap[0].keystore=
+# cas.authn.ldap[0].keystorePassword=
+# cas.authn.ldap[0].keystoreType=JKS|JCEKS|PKCS12
+#
+# NONE|CLOSE|BIND
+cas.authn.ldap[0].poolPassivator={{ apereo_cas_ldap.validateOnCheckout|default(apereo_cas_ldap_poolPassivator) }}
+cas.authn.ldap[0].minPoolSize={{ apereo_cas_ldap.validateOnCheckout|default(apereo_cas_ldap_minPoolSize) }}
+cas.authn.ldap[0].maxPoolSize={{ apereo_cas_ldap.validateOnCheckout|default(apereo_cas_ldap_maxPoolSize) }}
+cas.authn.ldap[0].validateOnCheckout={{ apereo_cas_ldap.validateOnCheckout|default(apereo_cas_ldap_validateOnCheckout) }}
+cas.authn.ldap[0].validatePeriodically={{ apereo_cas_ldap.validatePeriodically|default(apereo_cas_ldap_validatePeriodically) }}
+cas.authn.ldap[0].validatePeriod={{ apereo_cas_ldap.validatePeriod|default(apereo_cas_ldap_validatePeriod) }}
+cas.authn.ldap[0].validateTimeout={{ apereo_cas_ldap.validateTimeout|default(apereo_cas_ldap_validateTimeout) }}
+#
+# cas.authn.ldap[0].ldapAuthz.groupAttribute=
+# cas.authn.ldap[0].ldapAuthz.groupPrefix=
+# cas.authn.ldap[0].ldapAuthz.groupFilter=
+# cas.authn.ldap[0].ldapAuthz.rolePrefix=ROLE_
+# cas.authn.ldap[0].ldapAuthz.roleAttribute=uugid
+{% endif %}
