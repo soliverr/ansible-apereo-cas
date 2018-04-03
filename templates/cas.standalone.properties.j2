@@ -29,6 +29,36 @@ server.maxHttpHeaderSize=2097152
 server.useForwardHeaders=true
 server.connectionTimeout=20000
 
+{% if apereo_cas_service_registry is defined %}
+#
+# Service Registry
+#
+cas.serviceRegistry.watcherEnabled=true
+#
+cas.serviceRegistry.schedule.repeatInterval=120000
+cas.serviceRegistry.schedule.startDelay=15000
+#
+# cas.serviceRegistry.managementType=DEFAULT|DOMAIN
+#
+{% for serviceRegistry in apereo_cas_service_registry %}
+{% if serviceRegistry.type == 'json' %}
+# JSON service registry
+cas.serviceRegistry.json.location=file:{{ apereo_cas_etc }}/{{ serviceRegistry.location|default(apereo_cas_service_registry_location) }}
+# Auto-initialize the registry from default JSON service definitions
+cas.serviceRegistry.initFromJson={{ serviceRegistry.initFromJson|default(apereo_cas_service_registry_initFromJson) }}
+{% else %}
+# cas.serviceRegistry.json.location=classpath:/services
+{% endif %}
+{% if serviceRegistry.type == 'yaml' %}
+#
+# YAML service registry
+cas.serviceRegistry.yaml.location=file:{{ apereo_cas_etc }}/{{ serviceRegistry.location|default(apereo_cas_service_registry_location) }}
+{% else %}
+# cas.serviceRegistry.yaml.location=classpath:/services
+{% endif %}
+{% endfor %}
+{% endif %}
+
 #
 # Users Authentication
 #

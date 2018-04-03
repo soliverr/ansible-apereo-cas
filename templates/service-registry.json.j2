@@ -1,0 +1,11 @@
+{
+  /*
+   * Definition for {{ item.1.name }} service.
+   */
+  "@class" :            "{{ item.1.id.class|default('org.apereo.cas.services.RegexRegisteredService') }}",
+  "serviceId" :         "{{ item.1.service }}",
+  "name" :              "{{ item.1.name }}",
+  "id" :                {{ item.1.id }},
+  "evaluationOrder" :   {{ item.1.order|default('99999') }},
+}
+

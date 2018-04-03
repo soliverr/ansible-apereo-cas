@@ -58,3 +58,26 @@
   command: >
      {{ apereo_cas_java_home }}/bin/keytool -import  -noprompt -file {{ apereo_cas_etc }}/{{ apereo_cas_service }}.crt -alias {{ apereo_cas_service }} -keystore {{ apereo_cas_java_home }}/jre/lib/security/cacerts
 
+- name: Create service registry directories
+  when: apereo_cas_service_registry is defined
+  with_items: "{{ apereo_cas_service_registry }}"
+  file:
+    name: "{{ apereo_cas_etc }}/{{ item.location|default(apereo_cas_service_registry_location) }}"
+    state: directory
+    owner: "{{ apereo_cas_user }}"
+    group: "{{ apereo_cas_group }}"
+    mode: 0750
+
+- name: Create service registry
+  when: apereo_cas_service_registry is defined
+  with_subelements:
+    - "{{ apereo_cas_service_registry }}"
+    - services
+  template:
+    src: "service-registry.{{ item.0.type }}.j2"
+    dest: "{{ apereo_cas_etc }}/{{ item.0.location|default(apereo_cas_service_registry_location) }}/{{ item.1.name }}-{{ item.1.id }}.{{ item.0.type }}"
+    owner: "{{ apereo_cas_user }}"
+    group: "{{ apereo_cas_group }}"
+    mode: 0640
+    backup: yes
+

@@ -21,6 +21,10 @@ apereo_cas_logs: "/var/log/apereo/{{ apereo_cas_service }}"
 # Default Configuration Dir
 apereo_cas_etc: "/etc/apereo/{{ apereo_cas_service }}"
 
+# Default for Service Registry
+apereo_cas_service_registry_location: 'services'
+apereo_cas_service_registry_initFromJson: 'false'
+
 # Default name for cas.properties
 apereo_cas_properties: "cas.{{ apereo_cas_container }}.properties"
 apereo_cas_logger_properties: "log4j2.{{ apereo_cas_container }}.xml"
