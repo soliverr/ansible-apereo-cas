@@ -1,11 +1,19 @@
 {
   /*
-   * Definition for {{ item.1.name }} service.
+   * Definition for {{ item.name }} service.
    */
-  "@class" :            "{{ item.1.id.class|default('org.apereo.cas.services.RegexRegisteredService') }}",
-  "serviceId" :         "{{ item.1.service }}",
-  "name" :              "{{ item.1.name }}",
-  "id" :                {{ item.1.id }},
-  "evaluationOrder" :   {{ item.1.order|default('99999') }},
+  "@class" :            "{{ item.id.class|default('org.apereo.cas.services.RegexRegisteredService') }}",
+  "serviceId" :         "{{ item.service }}",
+  "name" :              "{{ item.name }}",
+  "id" :                {{ item.id }},
+  {% if item.order is defined %}
+  "evaluationOrder" :   {{ item.order }},
+  {% endif %}
+  {% if item.logoutType is defined %}
+  "logoutType" :        "{{ item.logoutType }}_CHANNEL",
+  {% endif %}
+  {% if item.logoutUrl is defined %}
+  "logoutUrl" :         "{{ item.logoutUrl }}",
+  {% endif %}  
 }
 

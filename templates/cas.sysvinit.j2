@@ -23,7 +23,7 @@
 JAVA_HOME="{{ apereo_cas_java_home }}"
 JAVA_OPTS="-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom"
 
-OUT_FILE="{{ apereo_cas_logs }}/{{ apereo_cas_service }}.out"
+OUT_FILE="{{ apereo_cas.log.location|default(apereo_cas_logs) }}/{{ apereo_cas_service }}.out"
 LOCKFILE="{{ apereo_cas_home }}/{{ apereo_cas_service }}.lck"
 
 SERVICE_NAME="Apereo CAS standalone server for {{ apereo_cas_service }}"
@@ -47,35 +47,9 @@ fi
 
 [ "$(id -nu 2>/dev/null)" = "$CAS_USER" ] && SU="/bin/sh"
 
-start() {
-        OLDPID=`/usr/bin/pgrep -f $PROCESS_STRING`
-        if [ ! -z "$OLDPID" ]; then
-            echo "$SERVICE_NAME is already running (pid $OLDPID) !"
-            echo
-            exit
-        fi
-        echo -n $"Starting $SERVICE_NAME ... "
-        echo "`date` Starting $SERVICE_NAME ... " > $OUT_FILE 2>&1
-
-        [ "$(id -nu 2>/dev/null)" = "root" ] && chown $CAS_USER:$CAS_GROUP $OUT_FILE
-
-        export JAVA_HOME JAVA_OPTS
-
-        nl=`wc -l $OUT_FILE`
-        $SU -c "$PROGRAM_START" >> $OUT_FILE 2>&1  &
-
-        RETVAL=$?
-        if [ $RETVAL -eq 0 ] ; then
-          wait_for "Ready to process requests" $nl
-        else
-          echo "FAILED: $RETVAL. Please check $OUT_FILE for more information."
-        fi
-        echo
-}
-
 wait_for() {
     res=$(tail -n +${2:-0} "$OUT_FILE" | fgrep -c "$1")
-    count=240
+    count=$3
     while [[ ! $res -gt 0 ]] && [[ $count -gt 0 ]]
     do
         sleep 1
@@ -92,17 +66,46 @@ wait_for() {
     fi
 }
 
+start() {
+        OLDPID=`/usr/bin/pgrep -f $PROCESS_STRING`
+        if [ ! -z "$OLDPID" ]; then
+            echo "$SERVICE_NAME is already running (pid $OLDPID) !"
+            echo
+            exit
+        fi
+        echo -n $"Starting $SERVICE_NAME ... "
+        echo "`date` Starting $SERVICE_NAME ... " > $OUT_FILE 2>&1
+
+        [ "$(id -nu 2>/dev/null)" = "root" ] && chown $CAS_USER:$CAS_GROUP $OUT_FILE
+
+        export JAVA_HOME JAVA_OPTS
+
+        nl=`wc -l $OUT_FILE | cut -d ' ' -f 1`
+        $SU -c "$PROGRAM_START" >> $OUT_FILE 2>&1  &
+
+        RETVAL=$?
+        if [ $RETVAL -eq 0 ] ; then
+          wait_for "Ready to process requests" $nl 60
+        else
+          echo "FAILED: $RETVAL. Please check $OUT_FILE for more information."
+        fi
+        echo
+}
+
 stop() {
         echo -n $"Stopping $SERVICE_NAME ... "
 
         OLDPID=`/usr/bin/pgrep -f $PROCESS_STRING`
+        
+        nl=`wc -l $OUT_FILE | cut -d ' ' -f 1`
+
         if [ "$OLDPID" != "" ]; then
             echo -n "(pid $OLDPID) "
             /bin/kill -TERM $OLDPID
 
             RETVAL=$?
             if [ $RETVAL -eq 0 ] ; then
-              wait_for "Closing CasWebApplicationContext" $nl
+              wait_for "Closing CasWebApplicationContext" $nl 60
             else
               echo "FAILED: $RETVAL. Please check $OUT_FILE for more information."
             fi

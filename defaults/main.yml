@@ -22,7 +22,8 @@ apereo_cas_logs: "/var/log/apereo/{{ apereo_cas_service }}"
 apereo_cas_etc: "/etc/apereo/{{ apereo_cas_service }}"
 
 # Default for Service Registry
-apereo_cas_service_registry_location: 'services'
+apereo_cas_service_registry_location_type: 'classpath:'
+apereo_cas_service_registry_location: '/services'
 apereo_cas_service_registry_initFromJson: 'false'
 
 # Default name for cas.properties
@@ -49,8 +50,20 @@ apereo_cas_server_name: 'localhost'
 apereo_cas_server_port: 8443
 apereo_cas_server_context_path: "/{{ apereo_cas_service }}"
 #
+# HTTP
+#
+apereo_cas_server_http_enable: true
+#
+# HTTP Proxy
+#
+apereo_cas_server_httpProxy_enable: false
+apereo_cas_server_httpProxy_secure: 'true'
+apereo_cas_server_httpProxy_scheme: 'https'
+apereo_cas_server_httpProxy_protocol: 'HTTP/1.1'
+#
 # SSL
 #
+apereo_cas_server_ssl_enable: true
 apereo_cas_server_ssl_keyStore: "file:{{ apereo_cas_keystore }}"
 apereo_cas_server_ssl_password: 'changeit'
 apereo_cas_dname: "CN={{ apereo_cas_server_name }}, OU=Unknown, o=Unknown, L=Unknown, S=Unknown, C=UN"
@@ -58,27 +71,92 @@ apereo_cas_dname: "CN={{ apereo_cas_server_name }}, OU=Unknown, o=Unknown, L=Unk
 # Log levels
 #
 apereo_cas_loglevel: 'warn'
+apereo_cas_loglevel_authn_ldap: "{{ apereo_cas_loglevel }}"
+apereo_cas_loglevel_hazelcast: "{{ apereo_cas_loglevel }}"
 #
-# Support LDAP Authentication
+# Logout
 #
-apereo_cas_ldap_type: 'DIRECT'
-apereo_cas_ldap_url: 'ldap://localhost:389'
-apereo_cas_ldap_connectionStrategy: 'DEFAULT'
-apereo_cas_ldap_useSsl: 'false'
-apereo_cas_ldap_useStartTls: 'false'
-apereo_cas_ldap_connectTimeout: 3000
-apereo_cas_ldap_baseDn: 'dc=no_domain'
-apereo_cas_ldap_userFilter: 'cn={user}'
-apereo_cas_ldap_subtreeSearch: 'true'
-apereo_cas_ldap_bindDn: 'cn=Manager,dc=no_domain'
-apereo_cas_ldap_bindCredential: 'Password'
-apereo_cas_ldap_poolPassivator: 'NONE'
-apereo_cas_ldap_minPoolSize: 3
-apereo_cas_ldap_maxPoolSize: 10
-apereo_cas_ldap_validateOnCheckout: 'true'
-apereo_cas_ldap_validatePeriodically: 'true'
-apereo_cas_ldap_validatePeriod: 600
-apereo_cas_ldap_validateTimeout: 5000
-apereo_cas_ldap_dnFormat: 'cn=%s,ou=people,dc=no_domain'
-apereo_cas_ldap_enhanceWithEntryResolver: 'true'
-apereo_cas_ldap_principalAttributePassword: 'password'
+apereo_cas_logout_followServiceRedirects: 'false'
+apereo_cas_logout_redirectParameter: 'service'
+apereo_cas_logout_confirmLogout: 'false'
+apereo_cas_logout_removeDescendantTickets: 'false'
+# Single logout
+apereo_cas_slo_disabled: 'false'
+apereo_cas_slo_asynchronous: 'true'
+#
+# Defaults for LDAP Authentication
+#
+apereo_cas_authn_ldap_type: 'DIRECT'
+apereo_cas_authn_ldap_url: 'ldap://localhost:389'
+apereo_cas_authn_ldap_connectionStrategy: 'DEFAULT'
+apereo_cas_authn_ldap_useSsl: 'false'
+apereo_cas_authn_ldap_useStartTls: 'false'
+apereo_cas_authn_ldap_connectTimeout: 3000
+apereo_cas_authn_ldap_baseDn: 'dc=no_domain'
+apereo_cas_authn_ldap_userFilter: 'cn={user}'
+apereo_cas_authn_ldap_subtreeSearch: 'true'
+apereo_cas_authn_ldap_bindDn: 'cn=Manager,dc=no_domain'
+apereo_cas_authn_ldap_bindCredential: 'Password'
+apereo_cas_authn_ldap_poolPassivator: 'NONE'
+apereo_cas_authn_ldap_minPoolSize: 3
+apereo_cas_authn_ldap_maxPoolSize: 10
+apereo_cas_authn_ldap_validateOnCheckout: 'true'
+apereo_cas_authn_ldap_validatePeriodically: 'true'
+apereo_cas_authn_ldap_validatePeriod: 600
+apereo_cas_authn_ldap_validateTimeout: 5000
+apereo_cas_authn_ldap_dnFormat: 'cn=%s,ou=people,dc=no_domain'
+apereo_cas_authn_ldap_enhanceWithEntryResolver: 'true'
+apereo_cas_authn_ldap_principalAttributePassword: 'password'
+#
+# Defaults for Hazelcast ticket registry
+#
+apereo_cas_ticket_registry_hazelcast_pageSize: 500
+apereo_cas_ticket_registry_hazelcast_configLocation: ''
+apereo_cas_ticket_registry_hazelcast_cluster_evictionPolicy: LRU
+apereo_cas_ticket_registry_hazelcast_cluster_maxNoHeartbeatSeconds: 300
+apereo_cas_ticket_registry_hazelcast_cluster_multicastEnabled: 'false'
+apereo_cas_ticket_registry_hazelcast_cluster_tcpipEnabled: 'true'
+apereo_cas_ticket_registry_hazelcast_cluster_members: ''
+apereo_cas_ticket_registry_hazelcast_cluster_loggingType: slf4j
+apereo_cas_ticket_registry_hazelcast_cluster_instanceName: "{{ apereo_cas_server_name|default(ansible_fqdn) }}"
+apereo_cas_ticket_registry_hazelcast_cluster_port: 5701
+apereo_cas_ticket_registry_hazelcast_cluster_portAutoIncrement: 'true'
+apereo_cas_ticket_registry_hazelcast_cluster_maxHeapSizePercentage: 85
+apereo_cas_ticket_registry_hazelcast_cluster_backupCount: 1
+apereo_cas_ticket_registry_hazelcast_cluster_asyncBackupCount: 0
+apereo_cas_ticket_registry_hazelcast_cluster_maxSizePolicy: USED_HEAP_PERCENTAGE
+apereo_cas_ticket_registry_hazelcast_cluster_timeout: 5
+apereo_cas_ticket_registry_hazelcast_cluster_multicastTrustedInterfaces: "{{ ansible_fqdn }}"
+apereo_cas_ticket_registry_hazelcast_cluster_multicastPort: 54327
+apereo_cas_ticket_registry_hazelcast_cluster_multicastGroup: 224.2.2.3
+apereo_cas_ticket_registry_hazelcast_cluster_multicastTimeout: 2
+apereo_cas_ticket_registry_hazelcast_cluster_multicastTimeToLive: 32
+apereo_cas_ticket_registry_hazelcast_crypto_signing_key: ''
+apereo_cas_ticket_registry_hazelcast_crypto_signing_keySize: 512
+apereo_cas_ticket_registry_hazelcast_crypto_encryption_key: ''
+apereo_cas_ticket_registry_hazelcast_crypto_encryption_keySize: 16
+apereo_cas_ticket_registry_hazelcast_crypto_alg: AES
+apereo_cas_ticket_registry_hazelcast_crypto_enabled: 'false'
+#
+# Defaults for Ticket Granting Cookie
+#
+apereo_cas_tgc_path: ''
+apereo_cas_tgc_maxAge: '-1'
+apereo_cas_tgc_domain: ''
+apereo_cas_tgc_name: 'TGC'
+apereo_cas_tgc_secure: 'true'
+apereo_cas_tgc_httpOnly: 'true'
+apereo_cas_tgc_rememberMeMaxAge: 1209600
+apereo_cas_tgc_crypto_encryption_key: ''
+apereo_cas_tgc_crypto_signing_key: ''
+apereo_cas_tgc_crypto_enabled: 'true'
+#
+# Defaults for Spring Webflow Client-Side Session
+#
+apereo_cas_webflow_crypto_enabled: 'true'
+apereo_cas_webflow_crypto_signing_key: ''
+apereo_cas_webflow_crypto_signing_keySize: 512
+apereo_cas_webflow_crypto_encryption_key: ''
+apereo_cas_webflow_crypto_encryption_keySize: 16
+apereo_cas_webflow_crypto_alg: AES
+

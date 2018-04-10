@@ -1,22 +1,27 @@
 {{ ansible_managed | comment }}
 
+#
 # Identify CAS Server 
-server.name=https://{{ apereo_cas_server_name|default(ansible_fqdn) }}:${server.port}
+#
+server.name=https://{{ apereo_cas.server_name|default(apereo_cas_server_name|default(ansible_fqdn)) }}:${server.port}
 server.prefix=${server.name}/${server.contextPath}
-
-server.contextPath={{ apereo_cas_server_context_path|default('/cas') }}
-
+#
+server.contextPath={{ apereo_cas.server_contextPath|default(apereo_cas_server_context_path|default('/cas')) }}
+#
 # By default and if you remove this setting, CAS runs on port 8080
-server.port={{ apereo_cas_server_port|default(8443) }}
+server.port={{ apereo_cas.server_port|default(apereo_cas_server_port|default(8080)) }}
 
-# To disable SSL configuration, comment out the following settings or set to blank values.
-server.ssl.keyStore={{ apereo_cas_server_ssl_keyStore }}
-server.ssl.keyStorePassword={{ apereo_cas_server_ssl_password }}
-server.ssl.keyPassword={{ apereo_cas_server_ssl_password }}
+#
+# Server SSL configuration
+#
+{% if apereo_cas.server_ssl.enable|default(apereo_cas_server_ssl_enable) %}
+server.ssl.enabled=true
+server.ssl.keyStore={{ apereo_cas.server_ssl.keyStore|default(apereo_cas_server_ssl_keyStore) }}
+server.ssl.keyStorePassword={{ apereo_cas.server_ssl.keyStorePassword|default(apereo_cas_server_ssl_password) }}
+server.ssl.keyPassword={{ apereo_cas.server_ssl.keyPassword|default(apereo_cas_server_ssl_password) }}
+server.ssl.keyAlias={{ apereo_cas.server_ssl.keyAlias|default(apereo_cas_service) }}
 # server.ssl.ciphers=
 # server.ssl.clientAuth=
-# server.ssl.enabled=
-# server.ssl.keyAlias=
 # server.ssl.keyStoreProvider=
 # server.ssl.keyStoreType=
 # server.ssl.protocol=
@@ -24,10 +29,50 @@ server.ssl.keyPassword={{ apereo_cas_server_ssl_password }}
 # server.ssl.trustStorePassword=
 # server.ssl.trustStoreProvider=
 # server.ssl.trustStoreType=
+{% else %}
+server.ssl.enabled=false
+{% endif %}
 
-server.maxHttpHeaderSize=2097152
-server.useForwardHeaders=true
-server.connectionTimeout=20000
+#
+# HTTP
+#
+{% if apereo_cas.server_http.enable|default(apereo_cas_server_http_enable) %}
+cas.server.http.enabled=true
+{% else %}
+cas.server.http.enabled=false
+{% endif %}
+
+#
+# HTTP Proxy configuration
+#
+{% if apereo_cas.server_httpProxy.enable|default(apereo_cas_server_httpProxy_enable) %}
+cas.server.httpProxy.enabled=true
+cas.server.httpProxy.secure={{ apereo_cas.server_httpProxy.secure|default(apereo_cas_server_httpProxy_secure) }}
+cas.server.httpProxy.scheme={{ apereo_cas.server_httpProxy.scheme|default(apereo_cas_server_httpProxy_scheme) }}
+cas.server.httpProxy.protocol={{ apereo_cas.server_httpProxy.protocol|default(apereo_cas_server_httpProxy_protocol) }}
+{% else %}
+cas.server.httpProxy.enabled=false
+{% endif %}
+
+# server.maxHttpHeaderSize=2097152
+# server.useForwardHeaders=true
+# server.connectionTimeout=20000
+
+#
+# Logout
+#
+cas.logout.followServiceRedirects={{ apereo_cas_logout_followServiceRedirects }}
+cas.logout.redirectParameter={{ apereo_cas_logout_redirectParameter }}
+cas.logout.confirmLogout={{ apereo_cas_logout_confirmLogout }}
+cas.logout.removeDescendantTickets={{ apereo_cas_logout_removeDescendantTickets }}
+#
+# 
+
+#
+# Single Logout
+#
+cas.slo.disabled={{ apereo_cas_slo_disabled }}
+cas.slo.asynchronous={{ apereo_cas_slo_asynchronous }}
 
 {% if apereo_cas_service_registry is defined %}
 #
@@ -39,66 +84,186 @@ cas.serviceRegistry.schedule.repeatInterval=120000
 cas.serviceRegistry.schedule.startDelay=15000
 #
 # cas.serviceRegistry.managementType=DEFAULT|DOMAIN
+{% if apereo_cas_service_registry.type == 'json' %}
 #
-{% for serviceRegistry in apereo_cas_service_registry %}
-{% if serviceRegistry.type == 'json' %}
 # JSON service registry
-cas.serviceRegistry.json.location=file:{{ apereo_cas_etc }}/{{ serviceRegistry.location|default(apereo_cas_service_registry_location) }}
+#
+cas.serviceRegistry.json.location={{ apereo_cas_service_registry.location_type|default(apereo_cas_service_registry_location_type) }}{{ apereo_cas_service_registry.location|default(apereo_cas_service_registry_location) }}
 # Auto-initialize the registry from default JSON service definitions
-cas.serviceRegistry.initFromJson={{ serviceRegistry.initFromJson|default(apereo_cas_service_registry_initFromJson) }}
-{% else %}
-# cas.serviceRegistry.json.location=classpath:/services
+cas.serviceRegistry.initFromJson={{ apereo_cas_service_registry.initFromJson|default(apereo_cas_service_registry_initFromJson) }}
 {% endif %}
-{% if serviceRegistry.type == 'yaml' %}
+{% if apereo_cas_service_registry.type == 'yaml' %}
 #
 # YAML service registry
-cas.serviceRegistry.yaml.location=file:{{ apereo_cas_etc }}/{{ serviceRegistry.location|default(apereo_cas_service_registry_location) }}
-{% else %}
-# cas.serviceRegistry.yaml.location=classpath:/services
+#
+cas.serviceRegistry.yaml.location={{ apereo_cas_service_registry.location_type|default(apereo_cas_service_registry_location_type) }}{{ apereo_cas_service_registry.location|default(apereo_cas_service_registry_location) }}
 {% endif %}
-{% endfor %}
+#
+# End of service registry block
+#
+{% endif %}
+
+{% if apereo_cas.webflow.crypto_enabled|default(apereo_cas_webflow_crypto_enabled) == 'true' %}
+#
+# Spring Webflow Client-Side Session
+#
+cas.webflow.crypto.enabled={{ apereo_cas.webflow.crypto_enabled|default(apereo_cas_webflow_crypto_enabled) }}
+{% if apereo_cas.webflow.crypto_signing_key|default(apereo_cas_webflow_crypto_signing_key) != '' %}
+cas.webflow.crypto.signing.key={{ apereo_cas.webflow.crypto_signing_key|default(apereo_cas_webflow_crypto_signing_key) }}
+cas.webflow.crypto.signing.keySize={{ apereo_cas.webflow.crypto_signing_keySize|default(apereo_cas_webflow_crypto_signing_keySize) }}
+{% endif %}
+{% if apereo_cas.webflow.crypto_encryption_key|default(apereo_cas_webflow_crypto_encryption_key) != '' %}
+cas.webflow.crypto.encryption.key={{ apereo_cas.webflow.crypto_encryption_key|default(apereo_cas_webflow_crypto_encryption_key) }}
+cas.webflow.crypto.encryption.keySize={{ apereo_cas.webflow.crypto_encryption_keySize|default(apereo_cas_webflow_crypto_encryption_keySize) }}
+{% endif %}
+{% if apereo_cas.webflow.crypto_alg|default(apereo_cas_webflow_crypto_alg) != '' %}
+cas.webflow.crypto.alg={{ apereo_cas.webflow.crypto_alg|default(apereo_cas_webflow_crypto_alg) }}
+{% endif %}
 {% endif %}
 
 #
-# Users Authentication
+# Ticket Granting Cookie
 #
+# cas.tgc.path=
+# cas.tgc.maxAge=-1
+# cas.tgc.domain=
+# cas.tgc.name=TGC
+# cas.tgc.secure=true
+# cas.tgc.httpOnly=true
+# cas.tgc.rememberMeMaxAge=1209600
+{% if apereo_cas.tgc.crypto_signing_key|default(apereo_cas_tgc_crypto_signing_key) != '' %}
+cas.tgc.crypto.signing.key={{ apereo_cas.tgc.crypto_signing_key|default(apereo_cas_tgc_crypto_signing_key) }}
+{% endif %}
+{% if apereo_cas.tgc.crypto_encryption_key|default(apereo_cas_tgc_crypto_encryption_key) != '' %}
+cas.tgc.crypto.encryption.key={{ apereo_cas.tgc.crypto_encryption_key|default(apereo_cas_tgc_crypto_encryption_key) }}
+{% endif %}
+{% if apereo_cas.tgc.crypto_enabled|default(apereo_cas_tgc_crypto_enabled) != '' %}
+cas.tgc.crypto.enabled={{ apereo_cas.tgc.crypto_enabled|default(apereo_cas_tgc_crypto_enabled) }}
+{% endif %}
+
+{% if apereo_cas_ticket_registry is defined %}
+#
+# Ticket registry
+#
+{% if apereo_cas_ticket_registry.inMemory is defined %}
+#
+# InMemory ticket registry
+#
+# Enable/Disable the backing map to be cacheable
+cas.ticket.registry.inMemory.cache={{ 'true' if apereo_cas_ticket_registry.inMemory.enable else 'false' }}
+#
+# cas.ticket.registry.inMemory.loadFactor=1
+# cas.ticket.registry.inMemory.concurrency=20
+# cas.ticket.registry.inMemory.initialCapacity=1000
+#
+# cas.ticket.registry.inMemory.crypto.signing.key=
+# cas.ticket.registry.inMemory.crypto.signing.keySize=512
+# cas.ticket.registry.inMemory.crypto.encryption.key=
+# cas.ticket.registry.inMemory.crypto.encryption.keySize=16
+# cas.ticket.registry.inMemory.crypto.alg=AES
+# cas.ticket.registry.inMemory.crypto.enabled=false
+{% endif %}
+{% if apereo_cas_ticket_registry.hazelcast is defined and apereo_cas_ticket_registry.hazelcast.enable %}
+#
+# Hazelcast ticket registry
+#
+cas.ticket.registry.hazelcast.pageSize={{ apereo_cas_ticket_registry.hazelcast.pageSize|default(apereo_cas_ticket_registry_hazelcast_pageSize) }}
+{% if apereo_cas_ticket_registry.hazelcast.configLocation|default(apereo_cas_ticket_registry_hazelcast_configLocation) != '' %}
+cas.ticket.registry.hazelcast.configLocation={{ apereo_cas_ticket_registry.hazelcast.configLocation|default(apereo_cas_ticket_registry_hazelcast_configLocation) }}
+{% else %}
+# cas.ticket.registry.hazelcast.configLocation=
+{% endif %}
+#
+cas.ticket.registry.hazelcast.cluster.evictionPolicy={{ apereo_cas_ticket_registry.hazelcast.cluster_evictionPolicy|default(apereo_cas_ticket_registry_hazelcast_cluster_evictionPolicy) }}
+cas.ticket.registry.hazelcast.cluster.maxNoHeartbeatSeconds={{ apereo_cas_ticket_registry.hazelcast.cluster_maxNoHeartbeatSeconds|default(apereo_cas_ticket_registry_hazelcast_cluster_maxNoHeartbeatSeconds) }}
+# Next two options are mutual exclusive
+cas.ticket.registry.hazelcast.cluster.multicastEnabled={{ apereo_cas_ticket_registry.hazelcast.cluster_multicastEnabled|default(apereo_cas_ticket_registry_hazelcast_cluster_multicastEnabled) }}
+cas.ticket.registry.hazelcast.cluster.tcpipEnabled={{ apereo_cas_ticket_registry.hazelcast.cluster_tcpipEnabled|default(apereo_cas_ticket_registry_hazelcast_cluster_tcpipEnabled) }}
+{% if apereo_cas_ticket_registry.hazelcast.cluster_tcpipEnabled|default(apereo_cas_ticket_registry_hazelcast_cluster_tcpipEnabled) == 'true' and apereo_cas_ticket_registry.hazelcast.cluster_members|default(apereo_cas_ticket_registry_hazelcast_cluster_members) != '' %}
+cas.ticket.registry.hazelcast.cluster.members={{ apereo_cas_ticket_registry.hazelcast.cluster_members|default(apereo_cas_ticket_registry_hazelcast_cluster_members) }}
+{% else %}
+# cas.ticket.registry.hazelcast.cluster.members=
+{% endif %}
+cas.ticket.registry.hazelcast.cluster.loggingType={{ apereo_cas_ticket_registry.hazelcast.cluster_loggingType|default(apereo_cas_ticket_registry_hazelcast_cluster_loggingType) }}
+cas.ticket.registry.hazelcast.cluster.instanceName={{ apereo_cas_ticket_registry.hazelcast.cluster_instanceName|default(apereo_cas_ticket_registry_hazelcast_cluster_instanceName) }}
+cas.ticket.registry.hazelcast.cluster.port={{ apereo_cas_ticket_registry.hazelcast.cluster_port|default(apereo_cas_ticket_registry_hazelcast_cluster_port) }}
+cas.ticket.registry.hazelcast.cluster.portAutoIncrement={{ apereo_cas_ticket_registry.hazelcast.cluster_portAutoIncrement|default(apereo_cas_ticket_registry_hazelcast_cluster_portAutoIncrement) }}
+cas.ticket.registry.hazelcast.cluster.maxHeapSizePercentage={{ apereo_cas_ticket_registry.hazelcast.cluster_maxHeapSizePercentage|default(apereo_cas_ticket_registry_hazelcast_cluster_maxHeapSizePercentage) }}
+cas.ticket.registry.hazelcast.cluster.backupCount={{ apereo_cas_ticket_registry.hazelcast.cluster_backupCount|default(apereo_cas_ticket_registry_hazelcast_cluster_backupCount) }}
+cas.ticket.registry.hazelcast.cluster.asyncBackupCount={{ apereo_cas_ticket_registry.hazelcast.cluster_asyncBackupCount|default(apereo_cas_ticket_registry_hazelcast_cluster_asyncBackupCount) }}
+cas.ticket.registry.hazelcast.cluster.maxSizePolicy={{ apereo_cas_ticket_registry.hazelcast.cluster_maxSizePolicy|default(apereo_cas_ticket_registry_hazelcast_cluster_maxSizePolicy) }}
+cas.ticket.registry.hazelcast.cluster.timeout={{ apereo_cas_ticket_registry.hazelcast.cluster_timeout|default(apereo_cas_ticket_registry_hazelcast_cluster_timeout) }}
+#
+{% if apereo_cas_ticket_registry.hazelcast.cluster_multicastEnabled|default(apereo_cas_ticket_registry_hazelcast_cluster_multicastEnabled) == 'true' %}
+cas.ticket.registry.hazelcast.cluster.multicastTrustedInterfaces={{ apereo_cas_ticket_registry.hazelcast.cluster_multicastTrustedInterfaces|default(apereo_cas_ticket_registry_hazelcast_cluster_multicastTrustedInterfaces) }}
+cas.ticket.registry.hazelcast.cluster.multicastPort={{ apereo_cas_ticket_registry.hazelcast.cluster_multicastPort|default(apereo_cas_ticket_registry_hazelcast_cluster_multicastPort) }}
+cas.ticket.registry.hazelcast.cluster.multicastGroup={{ apereo_cas_ticket_registry.hazelcast.cluster_multicastGroup|default(apereo_cas_ticket_registry_hazelcast_cluster_multicastGroup) }}
+cas.ticket.registry.hazelcast.cluster.multicastTimeout={{ apereo_cas_ticket_registry.hazelcast.cluster_multicastTimeout|default(apereo_cas_ticket_registry_hazelcast_cluster_multicastTimeout) }}
+cas.ticket.registry.hazelcast.cluster.multicastTimeToLive={{ apereo_cas_ticket_registry.hazelcast.cluster_multicastTimeToLive|default(apereo_cas_ticket_registry_hazelcast_cluster_multicastTimeToLive) }}
+{% endif %}
+#
+cas.ticket.registry.hazelcast.crypto.signing.key={{ apereo_cas_ticket_registry.hazelcast.crypto_signing_key|default(apereo_cas_ticket_registry_hazelcast_crypto_signing_key) }}
+cas.ticket.registry.hazelcast.crypto.signing.keySize={{ apereo_cas_ticket_registry.hazelcast.crypto_signing_keySize|default(apereo_cas_ticket_registry_hazelcast_crypto_signing_keySize) }}
+cas.ticket.registry.hazelcast.crypto.encryption.key={{ apereo_cas_ticket_registry.hazelcast.crypto_encryption_key|default(apereo_cas_ticket_registry_hazelcast_crypto_encryption_key) }}
+cas.ticket.registry.hazelcast.crypto.encryption.keySize={{ apereo_cas_ticket_registry.hazelcast.crypto_encryption_keySize|default(apereo_cas_ticket_registry_hazelcast_crypto_encryption_keySize) }}
+cas.ticket.registry.hazelcast.crypto.alg={{ apereo_cas_ticket_registry.hazelcast.crypto_alg|default(apereo_cas_ticket_registry_hazelcast_crypto_alg) }}
+cas.ticket.registry.hazelcast.crypto.enabled={{ apereo_cas_ticket_registry.hazelcast.crypto_enabled|default(apereo_cas_ticket_registry_hazelcast_crypto_enabled) }}
+{% endif %}
+#
+# End of ticket registry block
+#
+{% endif %}
+
+{% if apereo_cas_authn is defined %}
+#
+# Authentication parameters
+#
+{% if apereo_cas_authn.accept is defined %}
+#
+# Accept Users Authentication
+#
+{% if not apereo_cas_authn.accept.enable %}
 cas.authn.accept.users=
+{% else %}
+# cas.authn.accept.users=
 # cas.authn.accept.name=
 # cas.authn.accept.credentialCriteria=
-
+#
 # cas.authn.accept.passwordEncoder.type=NONE|DEFAULT|STANDARD|BCRYPT|SCRYPT|PBKDF2
 # cas.authn.accept.passwordEncoder.characterEncoding=
 # cas.authn.accept.passwordEncoder.encodingAlgorithm=
 # cas.authn.accept.passwordEncoder.secret=
 # cas.authn.accept.passwordEncoder.strength=16
-
+#
 # cas.authn.accept.principalTransformation.pattern=(.+)@example.org
 # cas.authn.accept.principalTransformation.groovy.location=file:///etc/cas/config/principal.groovy
 # cas.authn.accept.principalTransformation.suffix=
 # cas.authn.accept.principalTransformation.caseConversion=NONE|UPPERCASE|LOWERCASE
 # cas.authn.accept.principalTransformation.prefix=
+{% endif %}
+{% endif %}
 
-{% if apereo_cas_ldap is defined %}
+{% if apereo_cas_authn.ldap is defined and apereo_cas_authn.ldap.enable %}
 #
 # LDAP Authentication
 #
 # AD|AUTHENTICATED|DIRECT|ANONYMOUS
-cas.authn.ldap[0].type={{ apereo_cas_ldap.type|default(apereo_cas_ldap_type) }}
+cas.authn.ldap[0].type={{ apereo_cas_authn.ldap.type|default(apereo_cas_authn_ldap_type) }}
 # ldaps://ldap1.example.edu ldaps://ldap2.example.edu
-cas.authn.ldap[0].ldapUrl={{ apereo_cas_ldap.url|default(apereo_cas_ldap_url) }}
-cas.authn.ldap[0].connectionStrategy={{ apereo_cas_ldap.connectionStrategy|default(apereo_cas_ldap_connectionStrategy) }}
-cas.authn.ldap[0].useSsl={{ apereo_cas_ldap.useSsl|default(apereo_cas_ldap_useSsl) }}
-cas.authn.ldap[0].useStartTls={{ apereo_cas_ldap.useStartTls|default(apereo_cas_ldap_useStartTls) }}
-cas.authn.ldap[0].connectTimeout={{ apereo_cas_ldap.connectTimeout|default(apereo_cas_ldap_connectTimeout) }}
-cas.authn.ldap[0].baseDn={{ apereo_cas_ldap.baseDn|default(apereo_cas_ldap_baseDn) }}
-cas.authn.ldap[0].userFilter={{ apereo_cas_ldap.userFilter|default(apereo_cas_ldap_userFilter) }}
-cas.authn.ldap[0].subtreeSearch={{ apereo_cas_ldap.subtreeSearch|default(apereo_cas_ldap_subtreeSearch) }}
-cas.authn.ldap[0].bindDn={{ apereo_cas_ldap.bindDn|default(apereo_cas_ldap_bindDn) }}
-cas.authn.ldap[0].bindCredential={{ apereo_cas_ldap.bindCredential|default(apereo_cas_ldap_bindCredential) }}
+cas.authn.ldap[0].ldapUrl={{ apereo_cas_authn.ldap.url|default(apereo_cas_authn_ldap_url) }}
+cas.authn.ldap[0].connectionStrategy={{ apereo_cas_authn.ldap.connectionStrategy|default(apereo_cas_authn_ldap_connectionStrategy) }}
+cas.authn.ldap[0].useSsl={{ apereo_cas_authn.ldap.useSsl|default(apereo_cas_authn_ldap_useSsl) }}
+cas.authn.ldap[0].useStartTls={{ apereo_cas_authn.ldap.useStartTls|default(apereo_cas_authn_ldap_useStartTls) }}
+cas.authn.ldap[0].connectTimeout={{ apereo_cas_authn.ldap.connectTimeout|default(apereo_cas_authn_ldap_connectTimeout) }}
+cas.authn.ldap[0].baseDn={{ apereo_cas_authn.ldap.baseDn|default(apereo_cas_authn_ldap_baseDn) }}
+cas.authn.ldap[0].userFilter={{ apereo_cas_authn.ldap.userFilter|default(apereo_cas_authn_ldap_userFilter) }}
+cas.authn.ldap[0].subtreeSearch={{ apereo_cas_authn.ldap.subtreeSearch|default(apereo_cas_authn_ldap_subtreeSearch) }}
+cas.authn.ldap[0].bindDn={{ apereo_cas_authn.ldap.bindDn|default(apereo_cas_authn_ldap_bindDn) }}
+cas.authn.ldap[0].bindCredential={{ apereo_cas_authn.ldap.bindCredential|default(apereo_cas_authn_ldap_bindCredential) }}
 #
-cas.authn.ldap[0].enhanceWithEntryResolver={{ apereo_cas_ldap.enhanceWithEntryResolver|default(apereo_cas_ldap_enhanceWithEntryResolver) }}
-cas.authn.ldap[0].dnFormat={{ apereo_cas_ldap.dnFormat|default(apereo_cas_ldap_dnFormat) }}
-cas.authn.ldap[0].principalAttributePassword={{ apereo_cas_ldap.principalAttributePassword|default(apereo_cas_ldap_principalAttributePassword) }}
+cas.authn.ldap[0].enhanceWithEntryResolver={{ apereo_cas_authn.ldap.enhanceWithEntryResolver|default(apereo_cas_authn_ldap_enhanceWithEntryResolver) }}
+cas.authn.ldap[0].dnFormat={{ apereo_cas_authn.ldap.dnFormat|default(apereo_cas_authn_ldap_dnFormat) }}
+cas.authn.ldap[0].principalAttributePassword={{ apereo_cas_authn.ldap.principalAttributePassword|default(apereo_cas_authn_ldap_principalAttributePassword) }}
 #
 # cas.authn.ldap[0].saslMechanism=GSSAPI|DIGEST_MD5|CRAM_MD5|EXTERNAL
 # cas.authn.ldap[0].saslRealm=EXAMPLE.COM
@@ -112,13 +277,13 @@ cas.authn.ldap[0].principalAttributePassword={{ apereo_cas_ldap.principalAttribu
 # cas.authn.ldap[0].keystoreType=JKS|JCEKS|PKCS12
 #
 # NONE|CLOSE|BIND
-cas.authn.ldap[0].poolPassivator={{ apereo_cas_ldap.validateOnCheckout|default(apereo_cas_ldap_poolPassivator) }}
-cas.authn.ldap[0].minPoolSize={{ apereo_cas_ldap.validateOnCheckout|default(apereo_cas_ldap_minPoolSize) }}
-cas.authn.ldap[0].maxPoolSize={{ apereo_cas_ldap.validateOnCheckout|default(apereo_cas_ldap_maxPoolSize) }}
-cas.authn.ldap[0].validateOnCheckout={{ apereo_cas_ldap.validateOnCheckout|default(apereo_cas_ldap_validateOnCheckout) }}
-cas.authn.ldap[0].validatePeriodically={{ apereo_cas_ldap.validatePeriodically|default(apereo_cas_ldap_validatePeriodically) }}
-cas.authn.ldap[0].validatePeriod={{ apereo_cas_ldap.validatePeriod|default(apereo_cas_ldap_validatePeriod) }}
-cas.authn.ldap[0].validateTimeout={{ apereo_cas_ldap.validateTimeout|default(apereo_cas_ldap_validateTimeout) }}
+cas.authn.ldap[0].poolPassivator={{ apereo_cas_authn.ldap.validateOnCheckout|default(apereo_cas_authn_ldap_poolPassivator) }}
+cas.authn.ldap[0].minPoolSize={{ apereo_cas_authn.ldap.validateOnCheckout|default(apereo_cas_authn_ldap_minPoolSize) }}
+cas.authn.ldap[0].maxPoolSize={{ apereo_cas_authn.ldap.validateOnCheckout|default(apereo_cas_authn_ldap_maxPoolSize) }}
+cas.authn.ldap[0].validateOnCheckout={{ apereo_cas_authn.ldap.validateOnCheckout|default(apereo_cas_authn_ldap_validateOnCheckout) }}
+cas.authn.ldap[0].validatePeriodically={{ apereo_cas_authn.ldap.validatePeriodically|default(apereo_cas_authn_ldap_validatePeriodically) }}
+cas.authn.ldap[0].validatePeriod={{ apereo_cas_authn.ldap.validatePeriod|default(apereo_cas_authn_ldap_validatePeriod) }}
+cas.authn.ldap[0].validateTimeout={{ apereo_cas_authn.ldap.validateTimeout|default(apereo_cas_authn_ldap_validateTimeout) }}
 #
 # cas.authn.ldap[0].ldapAuthz.groupAttribute=
 # cas.authn.ldap[0].ldapAuthz.groupPrefix=
@@ -126,3 +291,25 @@ cas.authn.ldap[0].validateTimeout={{ apereo_cas_ldap.validateTimeout|default(ape
 # cas.authn.ldap[0].ldapAuthz.rolePrefix=ROLE_
 # cas.authn.ldap[0].ldapAuthz.roleAttribute=uugid
 {% endif %}
+#
+# End of authentication block
+#
+{% endif %}
+
+#
+# Monitoring
+#
+# cas.monitor.tgt.warn.threshold=10
+# cas.monitor.tgt.warn.evictionThreshold=0
+
+# cas.monitor.st.warn.threshold=10
+# cas.monitor.st.warn.evictionThreshold=0
+
+# cas.monitor.warn.threshold=10
+# cas.monitor.warn.evictionThreshold=0
+
+# cas.monitor.freeMemThreshold=10
+
+#
+# End of monitoring block
+#

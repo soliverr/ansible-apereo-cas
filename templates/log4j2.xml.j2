@@ -6,9 +6,9 @@
         Default log directory is the current directory but that can be overridden with -Dcas.log.dir=<logdir>
         Or you can change this property to a new default
         -->
-        <Property name="cas.log.dir" >{{ apereo_cas_logs }}</Property>
+        <Property name="cas.log.dir" >{{ apereo_cas.log.location|default(apereo_cas_logs) }}</Property>
         <!-- To see more CAS specific logging, adjust this property to info or debug or run server with -Dcas.log.leve=debug -->
-        <Property name="cas.log.level" >{{ apereo_cas_loglevel }}</Property>
+        <Property name="cas.log.level" >{{ apereo_cas.log.level|default(apereo_cas_loglevel) }}</Property>
     </Properties>
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
@@ -43,16 +43,6 @@
             </Policies>
         </RollingFile>
 
-        <RollingFile name="ldapFileAppender" fileName="${sys:cas.log.dir}/cas_ldap.log" append="true"
-                     filePattern="${sys:cas.log.dir}/cas_ldap-%d{yyyy-MM-dd-HH}-%i.log">
-            <PatternLayout pattern="%m%n"/>
-            <Policies>
-                <OnStartupTriggeringPolicy />
-                <SizeBasedTriggeringPolicy size="50 MB"/>
-                <TimeBasedTriggeringPolicy />
-            </Policies>
-        </RollingFile>
-
         <CasAppender name="casAudit">
             <AppenderRef ref="auditlogfile" />
         </CasAppender>
@@ -64,9 +54,6 @@
         </CasAppender>
         <CasAppender name="casPerf">
             <AppenderRef ref="perfFileAppender" />
-        </CasAppender>
-        <CasAppender name="casLDAP">
-            <AppenderRef ref="ldapFileAppender" />
         </CasAppender>
     </Appenders>
     <Loggers>
@@ -103,14 +90,9 @@
         <AsyncLogger name="com.ryantenney.metrics" level="warn" />
         <AsyncLogger name="net.jradius" level="warn" />
         <AsyncLogger name="org.openid4java" level="warn" />
-        <!-- <AsyncLogger name="org.ldaptive" level="warn" /> -->
-        <AsyncLogger name="com.hazelcast" level="warn" />
+        <AsyncLogger name="org.ldaptive" level="{{ apereo_cas_authn.ldap.loglevel|default(apereo_cas.log.authn_ldap|default(apereo_cas_loglevel_authn_ldap)) }}" />
+        <AsyncLogger name="com.hazelcast" level="{{ apereo_cas_ticket_registry.hazelcast.loglevel|default(apereo_cas.log.hazelcast|default(apereo_cas_loglevel_hazelcast)) }}" />
         <AsyncLogger name="org.apereo.spring" level="warn" />
-
-        <!-- Log LDAP to ldap.log -->
-        <AsyncLogger name="org.ldaptive" level="info" additivity="false" includeLocation="true">
-            <AppenderRef ref="casLDAP"/>
-        </AsyncLogger>
 
         <!-- Log perf stats only to perfStats.log -->
         <AsyncLogger name="perfStatsLogger" level="info" additivity="false" includeLocation="true">
