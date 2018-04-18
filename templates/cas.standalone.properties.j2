@@ -1,5 +1,17 @@
 {{ ansible_managed | comment }}
 
+{% if apereo_cas is not defined %}
+#
+# Identify CAS Server 
+#
+server.name=https://{{ apereo_cas_server_name }}:${server.port}
+server.prefix=${server.name}/${server.contextPath}
+#
+server.contextPath={{ apereo_cas_server_context_path }}
+#
+# By default and if you remove this setting, CAS runs on port 8080
+server.port={{ apereo_cas_server_port }}
+{% else %}
 #
 # Identify CAS Server 
 #
@@ -11,6 +23,7 @@ server.contextPath={{ apereo_cas.server_contextPath|default(apereo_cas_server_co
 # By default and if you remove this setting, CAS runs on port 8080
 server.port={{ apereo_cas.server_port|default(apereo_cas_server_port|default(8080)) }}
 
+{% if apereo_cas.server_ssl is defined %}
 #
 # Server SSL configuration
 #
@@ -32,16 +45,24 @@ server.ssl.keyAlias={{ apereo_cas.server_ssl.keyAlias|default(apereo_cas_service
 {% else %}
 server.ssl.enabled=false
 {% endif %}
+{% endif %}
 
+{% if apereo_cas.server_http is defined %}
 #
-# HTTP
+# HTTP Server
 #
 {% if apereo_cas.server_http.enable|default(apereo_cas_server_http_enable) %}
 cas.server.http.enabled=true
 {% else %}
 cas.server.http.enabled=false
 {% endif %}
+# FIXME: Is it place
+# server.maxHttpHeaderSize=2097152
+# server.useForwardHeaders=true
+# server.connectionTimeout=20000
+{% endif %}
 
+{% if apereo_cas.server_httpProxy is defined %}
 #
 # HTTP Proxy configuration
 #
@@ -53,26 +74,26 @@ cas.server.httpProxy.protocol={{ apereo_cas.server_httpProxy.protocol|default(ap
 {% else %}
 cas.server.httpProxy.enabled=false
 {% endif %}
+{% endif %}
 
-# server.maxHttpHeaderSize=2097152
-# server.useForwardHeaders=true
-# server.connectionTimeout=20000
 
+{% if apereo_cas.logout is defined %}
 #
 # Logout
 #
-cas.logout.followServiceRedirects={{ apereo_cas_logout_followServiceRedirects }}
-cas.logout.redirectParameter={{ apereo_cas_logout_redirectParameter }}
-cas.logout.confirmLogout={{ apereo_cas_logout_confirmLogout }}
-cas.logout.removeDescendantTickets={{ apereo_cas_logout_removeDescendantTickets }}
-#
-# 
+cas.logout.followServiceRedirects={{ apereo_cas.logout.followServiceRedirects|default(apereo_cas_logout_followServiceRedirects) }}
+cas.logout.redirectParameter={{ apereo_cas.logout.redirectParameter|default(apereo_cas_logout_redirectParameter) }}
+cas.logout.confirmLogout={{ apereo_cas.logout.confirmLogout|default(apereo_cas_logout_confirmLogout) }}
+cas.logout.removeDescendantTickets={{ apereo_cas.logout.removeDescendantTickets|default(apereo_cas_logout_removeDescendantTickets) }}
+{% endif %}
 
+{% if apereo_cas.slo is defined %}
 #
 # Single Logout
 #
-cas.slo.disabled={{ apereo_cas_slo_disabled }}
-cas.slo.asynchronous={{ apereo_cas_slo_asynchronous }}
+cas.slo.disabled={{ apereo_cas.slo.disabled|default(apereo_cas_slo_disabled) }}
+cas.slo.asynchronous={{ apereo_cas.slo.asynchronous|default(apereo_cas_slo_asynchronous) }}
+{% endif %}
 
 {% if apereo_cas_service_registry is defined %}
 #
@@ -103,10 +124,11 @@ cas.serviceRegistry.yaml.location={{ apereo_cas_service_registry.location_type|d
 #
 {% endif %}
 
-{% if apereo_cas.webflow.crypto_enabled|default(apereo_cas_webflow_crypto_enabled) == 'true' %}
+{% if apereo_cas.webflow is defined %}
 #
 # Spring Webflow Client-Side Session
 #
+{% if apereo_cas.webflow.crypto_enabled|default(apereo_cas_webflow_crypto_enabled) == 'true' %}
 cas.webflow.crypto.enabled={{ apereo_cas.webflow.crypto_enabled|default(apereo_cas_webflow_crypto_enabled) }}
 {% if apereo_cas.webflow.crypto_signing_key|default(apereo_cas_webflow_crypto_signing_key) != '' %}
 cas.webflow.crypto.signing.key={{ apereo_cas.webflow.crypto_signing_key|default(apereo_cas_webflow_crypto_signing_key) }}
@@ -120,7 +142,9 @@ cas.webflow.crypto.encryption.keySize={{ apereo_cas.webflow.crypto_encryption_ke
 cas.webflow.crypto.alg={{ apereo_cas.webflow.crypto_alg|default(apereo_cas_webflow_crypto_alg) }}
 {% endif %}
 {% endif %}
+{% endif %}
 
+{% if apereo_cas.tgc is defined %}
 #
 # Ticket Granting Cookie
 #
@@ -139,6 +163,7 @@ cas.tgc.crypto.encryption.key={{ apereo_cas.tgc.crypto_encryption_key|default(ap
 {% endif %}
 {% if apereo_cas.tgc.crypto_enabled|default(apereo_cas_tgc_crypto_enabled) != '' %}
 cas.tgc.crypto.enabled={{ apereo_cas.tgc.crypto_enabled|default(apereo_cas_tgc_crypto_enabled) }}
+{% endif %}
 {% endif %}
 
 {% if apereo_cas_ticket_registry is defined %}
@@ -277,9 +302,9 @@ cas.authn.ldap[0].principalAttributePassword={{ apereo_cas_authn.ldap.principalA
 # cas.authn.ldap[0].keystoreType=JKS|JCEKS|PKCS12
 #
 # NONE|CLOSE|BIND
-cas.authn.ldap[0].poolPassivator={{ apereo_cas_authn.ldap.validateOnCheckout|default(apereo_cas_authn_ldap_poolPassivator) }}
-cas.authn.ldap[0].minPoolSize={{ apereo_cas_authn.ldap.validateOnCheckout|default(apereo_cas_authn_ldap_minPoolSize) }}
-cas.authn.ldap[0].maxPoolSize={{ apereo_cas_authn.ldap.validateOnCheckout|default(apereo_cas_authn_ldap_maxPoolSize) }}
+cas.authn.ldap[0].poolPassivator={{ apereo_cas_authn.ldap.poolPassivator|default(apereo_cas_authn_ldap_poolPassivator) }}
+cas.authn.ldap[0].minPoolSize={{ apereo_cas_authn.ldap.minPoolSize|default(apereo_cas_authn_ldap_minPoolSize) }}
+cas.authn.ldap[0].maxPoolSize={{ apereo_cas_authn.ldap.maxPoolSize|default(apereo_cas_authn_ldap_maxPoolSize) }}
 cas.authn.ldap[0].validateOnCheckout={{ apereo_cas_authn.ldap.validateOnCheckout|default(apereo_cas_authn_ldap_validateOnCheckout) }}
 cas.authn.ldap[0].validatePeriodically={{ apereo_cas_authn.ldap.validatePeriodically|default(apereo_cas_authn_ldap_validatePeriodically) }}
 cas.authn.ldap[0].validatePeriod={{ apereo_cas_authn.ldap.validatePeriod|default(apereo_cas_authn_ldap_validatePeriod) }}
@@ -296,6 +321,7 @@ cas.authn.ldap[0].validateTimeout={{ apereo_cas_authn.ldap.validateTimeout|defau
 #
 {% endif %}
 
+{% if apereo_cas.monitor is defined %}
 #
 # Monitoring
 #
@@ -313,3 +339,6 @@ cas.authn.ldap[0].validateTimeout={{ apereo_cas_authn.ldap.validateTimeout|defau
 #
 # End of monitoring block
 #
+{% endif %}
+
+{% endif %}

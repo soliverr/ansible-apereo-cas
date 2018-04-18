@@ -6,14 +6,17 @@
   "serviceId" :         "{{ item.service }}",
   "name" :              "{{ item.name }}",
   "id" :                {{ item.id }},
-  {% if item.order is defined %}
+{% if item.order is defined %}
   "evaluationOrder" :   {{ item.order }},
-  {% endif %}
-  {% if item.logoutType is defined %}
+{% endif %}
+{% if item.logoutType is defined %}
   "logoutType" :        "{{ item.logoutType }}_CHANNEL",
-  {% endif %}
-  {% if item.logoutUrl is defined %}
+{% endif %}
+{% if item.logoutUrl is defined %}
   "logoutUrl" :         "{{ item.logoutUrl }}",
-  {% endif %}  
+{% endif %}
+{% if item.theme is defined %}
+  "theme" :             "{{ item.theme }}",
+{% endif %}
 }
 

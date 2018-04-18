@@ -8,6 +8,9 @@ apereo_cas_group: 'root'
 # Default service name
 apereo_cas_service: 'cas'
 
+# Default wait timeout to start/stop CAS service
+apereo_cas_start_timeout: 120
+
 # Default installation mode
 # FIXME: add support for tomcat, jetty, undertow, etc.
 apereo_cas_container: 'standalone'
@@ -47,7 +50,7 @@ apereo_cas_keystore: "{{ apereo_cas_etc }}/thekeystore"
 # Defaults for Apereo CAS server
 #
 apereo_cas_server_name: 'localhost'
-apereo_cas_server_port: 8443
+apereo_cas_server_port: 8080
 apereo_cas_server_context_path: "/{{ apereo_cas_service }}"
 #
 # HTTP
