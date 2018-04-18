@@ -35,6 +35,8 @@ CAS_GROUP="${CAS_GROUP:-{{ apereo_cas_group }}}"
 PROCESS_STRING="^.*-jar\s+{{ apereo_cas_home }}/{{ apereo_cas_war }}.*"
 PROGRAM_START="$JAVA_HOME/bin/java -Dlog4j.configurationFile={{ apereo_cas_etc }}/{{ apereo_cas_logger_properties }} -jar {{ apereo_cas_home }}/{{ apereo_cas_war }} --cas.standalone.config={{ apereo_cas_etc }} --cas.standalone.config.file={{ apereo_cas_etc }}/{{ apereo_cas_properties }}"
 
+# Start/Stop wait timeout
+CAS_WFT={{ apereo_cas_start_timeout }}
 
 RETVAL="0"
 
@@ -85,7 +87,7 @@ start() {
 
         RETVAL=$?
         if [ $RETVAL -eq 0 ] ; then
-          wait_for "Ready to process requests" $nl 60
+          wait_for "Ready to process requests" $nl $CAS_WFT
         else
           echo "FAILED: $RETVAL. Please check $OUT_FILE for more information."
         fi
@@ -96,7 +98,7 @@ stop() {
         echo -n $"Stopping $SERVICE_NAME ... "
 
         OLDPID=`/usr/bin/pgrep -f $PROCESS_STRING`
-        
+
         nl=`wc -l $OUT_FILE | cut -d ' ' -f 1`
 
         if [ "$OLDPID" != "" ]; then
@@ -105,7 +107,7 @@ stop() {
 
             RETVAL=$?
             if [ $RETVAL -eq 0 ] ; then
-              wait_for "Closing CasWebApplicationContext" $nl 60
+              wait_for "Closing CasWebApplicationContext" $nl $CAS_WFT
             else
               echo "FAILED: $RETVAL. Please check $OUT_FILE for more information."
             fi
