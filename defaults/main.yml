@@ -111,6 +111,83 @@ apereo_cas_authn_ldap_dnFormat: 'cn=%s,ou=people,dc=no_domain'
 apereo_cas_authn_ldap_enhanceWithEntryResolver: 'true'
 apereo_cas_authn_ldap_principalAttributePassword: 'password'
 #
+# Defaults for NTLM Authentication
+#
+apereo_cas_authn_ntlm_includePattern: ''
+apereo_cas_authn_ntlm_loadBalance: 'true'
+apereo_cas_authn_ntlm_domainController: ''
+apereo_cas_authn_ntlm_name: ''
+#
+# Defaults for SPNEGO/Kerberos Authentication
+#
+apereo_cas_authn_spnego_kerberosConf: ''
+apereo_cas_authn_spnego_mixedModeAuthentication: 'false'
+apereo_cas_authn_spnego_cachePolicy: 600
+apereo_cas_authn_spnego_timeout: 300000
+apereo_cas_authn_spnego_jcifsServicePrincipal: 'HTTP/cas.example.com@EXAMPLE.COM'
+apereo_cas_authn_spnego_jcifsNetbiosWins: ''
+apereo_cas_authn_spnego_loginConf: ''
+apereo_cas_authn_spnego_ntlmAllowed: 'true'
+apereo_cas_authn_spnego_hostNamePatternString: '.+'
+apereo_cas_authn_spnego_jcifsUsername: ''
+apereo_cas_authn_spnego_useSubjectCredsOnly: 'false'
+apereo_cas_authn_spnego_supportedBrowsers: 'MSIE,Trident,Firefox,AppleWebKit'
+apereo_cas_authn_spnego_jcifsDomainController: ''
+apereo_cas_authn_spnego_dnsTimeout: 2000
+apereo_cas_authn_spnego_hostNameClientActionStrategy: 'hostnameSpnegoClientAction'
+apereo_cas_authn_spnego_kerberosKdc: '172.10.1.10'
+apereo_cas_authn_spnego_alternativeRemoteHostAttribute: 'alternateRemoteHeader'
+apereo_cas_authn_spnego_jcifsDomain: ''
+apereo_cas_authn_spnego_ipsToCheckPattern: '127.+'
+apereo_cas_authn_spnego_kerberosDebug: 'true'
+apereo_cas_authn_spnego_send401OnAuthenticationFailure: 'true'
+apereo_cas_authn_spnego_kerberosRealm: 'EXAMPLE.COM'
+apereo_cas_authn_spnego_ntlm: 'false'
+apereo_cas_authn_spnego_principalWithDomainName: 'false'
+apereo_cas_authn_spnego_jcifsServicePassword: ''
+apereo_cas_authn_spnego_jcifsPassword: ''
+apereo_cas_authn_spnego_spnegoAttributeName: 'distinguishedName'
+apereo_cas_authn_spnego_name: ''
+apereo_cas_authn_spnego_principal_principalAttribute: ''
+apereo_cas_authn_spnego_principal_returnNull: 'false'
+apereo_cas_authn_spnego_ldap_ldapUrl: 'ldaps://ldap1.example.edu ldaps://ldap2.example.edu'
+apereo_cas_authn_spnego_ldap_connectionStrategy: ''
+apereo_cas_authn_spnego_ldap_baseDn: 'dc=example,dc=org'
+apereo_cas_authn_spnego_ldap_bindDn: 'cn=Directory Manager,dc=example,dc=org'
+apereo_cas_authn_spnego_ldap_bindCredential: 'Password'
+apereo_cas_authn_spnego_ldap_providerClass: 'org.ldaptive.provider.unboundid.UnboundIDProvider'
+apereo_cas_authn_spnego_ldap_connectTimeout: 5000
+apereo_cas_authn_spnego_ldap_trustCertificates: ''
+apereo_cas_authn_spnego_ldap_keystore: ''
+apereo_cas_authn_spnego_ldap_keystorePassword: ''
+#JKS|JCEKS|PKCS12
+apereo_cas_authn_spnego_ldap_keystoreType: 'PKCS12'
+# NONE|CLOSE|BIND
+apereo_cas_authn_spnego_ldap_poolPassivator: 'NONE'
+apereo_cas_authn_spnego_ldap_minPoolSize: 3
+apereo_cas_authn_spnego_ldap_maxPoolSize: 10
+apereo_cas_authn_spnego_ldap_validateOnCheckout: 'true'
+apereo_cas_authn_spnego_ldap_validatePeriodically: 'true'
+apereo_cas_authn_spnego_ldap_validatePeriod: 600
+apereo_cas_authn_spnego_ldap_validateTimeout: 5000
+apereo_cas_authn_spnego_ldap_failFast: 'true'
+apereo_cas_authn_spnego_ldap_idleTime: 500
+apereo_cas_authn_spnego_ldap_prunePeriod: 600
+apereo_cas_authn_spnego_ldap_blockWaitTime: 5000
+apereo_cas_authn_spnego_ldap_subtreeSearch: 'true'
+apereo_cas_authn_spnego_ldap_useSsl: 'true'
+apereo_cas_authn_spnego_ldap_useStartTls: 'false'
+apereo_cas_authn_spnego_ldap_searchFilter: 'host={host}'
+# NONE|SEARCH|COMPARE
+apereo_cas_authn_spnego_ldap_validator_type: 'NONE'
+apereo_cas_authn_spnego_ldap_validator_searchFilter: '(objectClass=*)'
+#  OBJECT|ONELEVEL|SUBTREE
+apereo_cas_authn_spnego_ldap_validator_scope: 'SUBTREE'
+apereo_cas_authn_spnego_ldap_validator_attributeName: 'objectClass'
+apereo_cas_authn_spnego_ldap_validator_attributeValues: 'top'
+apereo_cas_authn_spnego_ldap_validator_dn: ''
+#
+#
 # Defaults for Hazelcast ticket registry
 #
 apereo_cas_ticket_registry_hazelcast_pageSize: 500

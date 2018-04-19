@@ -316,6 +316,226 @@ cas.authn.ldap[0].validateTimeout={{ apereo_cas_authn.ldap.validateTimeout|defau
 # cas.authn.ldap[0].ldapAuthz.rolePrefix=ROLE_
 # cas.authn.ldap[0].ldapAuthz.roleAttribute=uugid
 {% endif %}
+
+{% if apereo_cas_authn.spnego is defined and apereo_cas_authn.spnego.enable %}
+#
+# SPNEGO (Kerberos) Authentication
+#
+{% if apereo_cas_authn.spnego.kerberosConf|default(apereo_cas_authn_spnego_kerberosConf) != '' %}
+cas.authn.spnego.kerberosConf={{ apereo_cas_authn.spnego.kerberosConf|default(apereo_cas_authn_spnego_kerberosConf) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.mixedModeAuthentication|default(apereo_cas_authn_spnego_mixedModeAuthentication) != '' %}
+cas.authn.spnego.mixedModeAuthentication={{ apereo_cas_authn.spnego.mixedModeAuthentication|default(apereo_cas_authn_spnego_mixedModeAuthentication) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.cachePolicy|default(apereo_cas_authn_spnego_cachePolicy) != '' %}
+cas.authn.spnego.cachePolicy={{ apereo_cas_authn.spnego.cachePolicy|default(apereo_cas_authn_spnego_cachePolicy) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.timeout|default(apereo_cas_authn_spnego_timeout) != '' %}
+cas.authn.spnego.timeout={{ apereo_cas_authn.spnego.timeout|default(apereo_cas_authn_spnego_timeout) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.jcifsServicePrincipal|default(apereo_cas_authn_spnego_jcifsServicePrincipal) != '' %}
+cas.authn.spnego.jcifsServicePrincipal={{ apereo_cas_authn.spnego.jcifsServicePrincipal|default(apereo_cas_authn_spnego_jcifsServicePrincipal) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.jcifsNetbiosWins|default(apereo_cas_authn_spnego_jcifsNetbiosWins) != '' %}
+cas.authn.spnego.jcifsNetbiosWins={{ apereo_cas_authn.spnego.jcifsNetbiosWins|default(apereo_cas_authn_spnego_jcifsNetbiosWins) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.loginConf|default(apereo_cas_authn_spnego_loginConf) != '' %}
+cas.authn.spnego.loginConf={{ apereo_cas_authn.spnego.loginConf|default(apereo_cas_authn_spnego_loginConf) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ntlmAllowed|default(apereo_cas_authn_spnego_ntlmAllowed) != '' %}
+cas.authn.spnego.ntlmAllowed={{ apereo_cas_authn.spnego.ntlmAllowed|default(apereo_cas_authn_spnego_ntlmAllowed) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.hostNamePatternString|default(apereo_cas_authn_spnego_hostNamePatternString) != '' %}
+cas.authn.spnego.hostNamePatternString={{ apereo_cas_authn.spnego.hostNamePatternString|default(apereo_cas_authn_spnego_hostNamePatternString) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.jcifsUsername|default(apereo_cas_authn_spnego_jcifsUsername) != '' %}
+cas.authn.spnego.jcifsUsername={{ apereo_cas_authn.spnego.jcifsUsername|default(apereo_cas_authn_spnego_jcifsUsername) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.useSubjectCredsOnly|default(apereo_cas_authn_spnego_useSubjectCredsOnly) != '' %}
+cas.authn.spnego.useSubjectCredsOnly={{ apereo_cas_authn.spnego.useSubjectCredsOnly|default(apereo_cas_authn_spnego_useSubjectCredsOnly) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.supportedBrowsers|default(apereo_cas_authn_spnego_supportedBrowsers) != '' %}
+cas.authn.spnego.supportedBrowsers={{ apereo_cas_authn.spnego.supportedBrowsers|default(apereo_cas_authn_spnego_supportedBrowsers) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.jcifsDomainController|default(apereo_cas_authn_spnego_jcifsDomainController) != '' %}
+cas.authn.spnego.jcifsDomainController={{ apereo_cas_authn.spnego.jcifsDomainController|default(apereo_cas_authn_spnego_jcifsDomainController) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.dnsTimeout|default(apereo_cas_authn_spnego_dnsTimeout) != '' %}
+cas.authn.spnego.dnsTimeout={{ apereo_cas_authn.spnego.dnsTimeout|default(apereo_cas_authn_spnego_dnsTimeout) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.hostNameClientActionStrategy|default(apereo_cas_authn_spnego_hostNameClientActionStrategy) != '' %}
+cas.authn.spnego.hostNameClientActionStrategy={{ apereo_cas_authn.spnego.hostNameClientActionStrategy|default(apereo_cas_authn_spnego_hostNameClientActionStrategy) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.kerberosKdc|default(apereo_cas_authn_spnego_kerberosKdc) != '' %}
+cas.authn.spnego.kerberosKdc={{ apereo_cas_authn.spnego.kerberosKdc|default(apereo_cas_authn_spnego_kerberosKdc) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.alternativeRemoteHostAttribute|default(apereo_cas_authn_spnego_alternativeRemoteHostAttribute) != '' %}
+cas.authn.spnego.alternativeRemoteHostAttribute={{ apereo_cas_authn.spnego.alternativeRemoteHostAttribute|default(apereo_cas_authn_spnego_alternativeRemoteHostAttribute) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.jcifsDomain|default(apereo_cas_authn_spnego_jcifsDomain) != '' %}
+cas.authn.spnego.jcifsDomain={{ apereo_cas_authn.spnego.jcifsDomain|default(apereo_cas_authn_spnego_jcifsDomain) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ipsToCheckPattern|default(apereo_cas_authn_spnego_ipsToCheckPattern) != '' %}
+cas.authn.spnego.ipsToCheckPattern={{ apereo_cas_authn.spnego.ipsToCheckPattern|default(apereo_cas_authn_spnego_ipsToCheckPattern) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.kerberosDebug|default(apereo_cas_authn_spnego_kerberosDebug) != '' %}
+cas.authn.spnego.kerberosDebug={{ apereo_cas_authn.spnego.kerberosDebug|default(apereo_cas_authn_spnego_kerberosDebug) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.send401OnAuthenticationFailure|default(apereo_cas_authn_spnego_send401OnAuthenticationFailure) != '' %}
+cas.authn.spnego.send401OnAuthenticationFailure={{ apereo_cas_authn.spnego.send401OnAuthenticationFailure|default(apereo_cas_authn_spnego_send401OnAuthenticationFailure) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.kerberosRealm|default(apereo_cas_authn_spnego_kerberosRealm) != '' %}
+cas.authn.spnego.kerberosRealm={{ apereo_cas_authn.spnego.kerberosRealm|default(apereo_cas_authn_spnego_kerberosRealm) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ntlm|default(apereo_cas_authn_spnego_ntlm) != '' %}
+cas.authn.spnego.ntlm={{ apereo_cas_authn.spnego.ntlm|default(apereo_cas_authn_spnego_ntlm) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.principalWithDomainName|default(apereo_cas_authn_spnego_principalWithDomainName) != '' %}
+cas.authn.spnego.principalWithDomainName={{ apereo_cas_authn.spnego.principalWithDomainName|default(apereo_cas_authn_spnego_principalWithDomainName) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.jcifsServicePassword|default(apereo_cas_authn_spnego_jcifsServicePassword) != '' %}
+cas.authn.spnego.jcifsServicePassword={{ apereo_cas_authn.spnego.jcifsServicePassword|default(apereo_cas_authn_spnego_jcifsServicePassword) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.jcifsPassword|default(apereo_cas_authn_spnego_jcifsPassword) != '' %}
+cas.authn.spnego.jcifsPassword={{ apereo_cas_authn.spnego.jcifsPassword|default(apereo_cas_authn_spnego_jcifsPassword) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.spnegoAttributeName|default(apereo_cas_authn_spnego_spnegoAttributeName) != '' %}
+cas.authn.spnego.spnegoAttributeName={{ apereo_cas_authn.spnego.spnegoAttributeName|default(apereo_cas_authn_spnego_spnegoAttributeName) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.name|default(apereo_cas_authn_spnego_name) != '' %}
+cas.authn.spnego.name={{ apereo_cas_authn.spnego.name|default(apereo_cas_authn_spnego_name) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.principal is defined %}
+{% if apereo_cas_authn.spnego.principal.principalAttribute|default(apereo_cas_authn_spnego_principal_principalAttribute) != '' %}
+cas.authn.spnego.principal.principalAttribute={{ apereo_cas_authn.spnego.principal.principalAttribute|default(apereo_cas_authn_spnego_principal_principalAttribute) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.principal.returnNull|default(apereo_cas_authn_spnego_principal_returnNull) != '' %}
+cas.authn.spnego.principal.returnNull={{ apereo_cas_authn.spnego.principal.returnNull|default(apereo_cas_authn_spnego_principal_returnNull) }}
+{% endif %}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap is defined %}
+{% if apereo_cas_authn.spnego.ldap.ldapUrl|default(apereo_cas_authn_spnego_ldap_ldapUrl) != '' %}
+cas.authn.spnego.ldap.ldapUrl={{ apereo_cas_authn.spnego.ldap.ldapUrl|default(apereo_cas_authn_spnego_ldap_ldapUrl) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.connectionStrategy|default(apereo_cas_authn_spnego_ldap_connectionStrategy) != '' %}
+cas.authn.spnego.ldap.connectionStrategy={{ apereo_cas_authn.spnego.ldap.connectionStrategy|default(apereo_cas_authn_spnego_ldap_connectionStrategy) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.baseDn|default(apereo_cas_authn_spnego_ldap_baseDn) != '' %}
+cas.authn.spnego.ldap.baseDn={{ apereo_cas_authn.spnego.ldap.baseDn|default(apereo_cas_authn_spnego_ldap_baseDn) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.bindDn|default(apereo_cas_authn_spnego_ldap_bindDn) != '' %}
+cas.authn.spnego.ldap.bindDn={{ apereo_cas_authn.spnego.ldap.bindDn|default(apereo_cas_authn_spnego_ldap_bindDn) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.bindCredential|default(apereo_cas_authn_spnego_ldap_bindCredential) != '' %}
+cas.authn.spnego.ldap.bindCredential={{ apereo_cas_authn.spnego.ldap.bindCredential|default(apereo_cas_authn_spnego_ldap_bindCredential) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.providerClass|default(apereo_cas_authn_spnego_ldap_providerClass) != '' %}
+cas.authn.spnego.ldap.providerClass={{ apereo_cas_authn.spnego.ldap.providerClass|default(apereo_cas_authn_spnego_ldap_providerClass) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.connectTimeout|default(apereo_cas_authn_spnego_ldap_connectTimeout) != '' %}
+cas.authn.spnego.ldap.connectTimeout={{ apereo_cas_authn.spnego.ldap.connectTimeout|default(apereo_cas_authn_spnego_ldap_connectTimeout) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.trustCertificates|default(apereo_cas_authn_spnego_ldap_trustCertificates) != '' %}
+cas.authn.spnego.ldap.trustCertificates={{ apereo_cas_authn.spnego.ldap.trustCertificates|default(apereo_cas_authn_spnego_ldap_trustCertificates) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.keystore|default(apereo_cas_authn_spnego_ldap_keystore) != '' %}
+cas.authn.spnego.ldap.keystore={{ apereo_cas_authn.spnego.ldap.keystore|default(apereo_cas_authn_spnego_ldap_keystore) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.keystorePassword|default(apereo_cas_authn_spnego_ldap_keystorePassword) != '' %}
+cas.authn.spnego.ldap.keystorePassword={{ apereo_cas_authn.spnego.ldap.keystorePassword|default(apereo_cas_authn_spnego_ldap_keystorePassword) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.keystoreType|default(apereo_cas_authn_spnego_ldap_keystoreType) != '' %}
+# JKS|JCEKS|PKCS12
+cas.authn.spnego.ldap.keystoreType={{ apereo_cas_authn.spnego.ldap.keystoreType|default(apereo_cas_authn_spnego_ldap_keystoreType) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.poolPassivator|default(apereo_cas_authn_spnego_ldap_poolPassivator) != '' %}
+# NONE|CLOSE|BIND
+cas.authn.spnego.ldap.poolPassivator={{ apereo_cas_authn.spnego.ldap.poolPassivator|default(apereo_cas_authn_spnego_ldap_poolPassivator) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.minPoolSize|default(apereo_cas_authn_spnego_ldap_minPoolSize) != '' %}
+cas.authn.spnego.ldap.minPoolSize={{ apereo_cas_authn.spnego.ldap.minPoolSize|default(apereo_cas_authn_spnego_ldap_minPoolSize) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.maxPoolSize|default(apereo_cas_authn_spnego_ldap_maxPoolSize) != '' %}
+cas.authn.spnego.ldap.maxPoolSize={{ apereo_cas_authn.spnego.ldap.maxPoolSize|default(apereo_cas_authn_spnego_ldap_maxPoolSize) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.validateOnCheckout|default(apereo_cas_authn_spnego_ldap_validateOnCheckout) != '' %}
+cas.authn.spnego.ldap.validateOnCheckout={{ apereo_cas_authn.spnego.ldap.validateOnCheckout|default(apereo_cas_authn_spnego_ldap_validateOnCheckout) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.validatePeriodically|default(apereo_cas_authn_spnego_ldap_validatePeriodically) != '' %}
+cas.authn.spnego.ldap.validatePeriodically={{ apereo_cas_authn.spnego.ldap.validatePeriodically|default(apereo_cas_authn_spnego_ldap_validatePeriodically) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.validatePeriod|default(apereo_cas_authn_spnego_ldap_validatePeriod) != '' %}
+cas.authn.spnego.ldap.validatePeriod={{ apereo_cas_authn.spnego.ldap.validatePeriod|default(apereo_cas_authn_spnego_ldap_validatePeriod) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.validateTimeout|default(apereo_cas_authn_spnego_ldap_validateTimeout) != '' %}
+cas.authn.spnego.ldap.validateTimeout={{ apereo_cas_authn.spnego.ldap.validateTimeout|default(apereo_cas_authn_spnego_ldap_validateTimeout) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.failFast|default(apereo_cas_authn_spnego_ldap_failFast) != '' %}
+cas.authn.spnego.ldap.failFast={{ apereo_cas_authn.spnego.ldap.failFast|default(apereo_cas_authn_spnego_ldap_failFast) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.idleTime|default(apereo_cas_authn_spnego_ldap_idleTime) != '' %}
+cas.authn.spnego.ldap.idleTime={{ apereo_cas_authn.spnego.ldap.idleTime|default(apereo_cas_authn_spnego_ldap_idleTime) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.prunePeriod|default(apereo_cas_authn_spnego_ldap_prunePeriod) != '' %}
+cas.authn.spnego.ldap.prunePeriod={{ apereo_cas_authn.spnego.ldap.prunePeriod|default(apereo_cas_authn_spnego_ldap_prunePeriod) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.blockWaitTime|default(apereo_cas_authn_spnego_ldap_blockWaitTime) != '' %}
+cas.authn.spnego.ldap.blockWaitTime={{ apereo_cas_authn.spnego.ldap.blockWaitTime|default(apereo_cas_authn_spnego_ldap_blockWaitTime) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.subtreeSearch|default(apereo_cas_authn_spnego_ldap_subtreeSearch) != '' %}
+cas.authn.spnego.ldap.subtreeSearch={{ apereo_cas_authn.spnego.ldap.subtreeSearch|default(apereo_cas_authn_spnego_ldap_subtreeSearch) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.useSsl|default(apereo_cas_authn_spnego_ldap_useSsl) != '' %}
+cas.authn.spnego.ldap.useSsl={{ apereo_cas_authn.spnego.ldap.useSsl|default(apereo_cas_authn_spnego_ldap_useSsl) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.useStartTls|default(apereo_cas_authn_spnego_ldap_useStartTls) != '' %}
+cas.authn.spnego.ldap.useStartTls={{ apereo_cas_authn.spnego.ldap.useStartTls|default(apereo_cas_authn_spnego_ldap_useStartTls) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.searchFilter|default(apereo_cas_authn_spnego_ldap_searchFilter) != '' %}
+cas.authn.spnego.ldap.searchFilter={{ apereo_cas_authn.spnego.ldap.searchFilter|default(apereo_cas_authn_spnego_ldap_searchFilter) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.validator is defined %}
+{% if apereo_cas_authn.spnego.ldap.validator.type|default(apereo_cas_authn_spnego_ldap_validator_type) != '' %}
+# NONE|SEARCH|COMPARE
+cas.authn.spnego.ldap.validator.type={{ apereo_cas_authn.spnego.ldap.validator.type|default(apereo_cas_authn_spnego_ldap_validator_type) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.validator.searchFilter|default(apereo_cas_authn_spnego_ldap_validator_searchFilter) != '' %}
+cas.authn.spnego.ldap.validator.searchFilter={{ apereo_cas_authn.spnego.ldap.validator.searchFilter|default(apereo_cas_authn_spnego_ldap_validator_searchFilter) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.validator.scope|default(apereo_cas_authn_spnego_ldap_validator_scope) != '' %}
+# OBJECT|ONELEVEL|SUBTREE
+cas.authn.spnego.ldap.validator.scope={{ apereo_cas_authn.spnego.ldap.validator.scope|default(apereo_cas_authn_spnego_ldap_validator_scope) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.validator.attributeName|default(apereo_cas_authn_spnego_ldap_validator_attributeName) != '' %}
+cas.authn.spnego.ldap.validator.attributeName={{ apereo_cas_authn.spnego.ldap.validator.attributeName|default(apereo_cas_authn_spnego_ldap_validator_attributeName) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.validator.attributeValues|default(apereo_cas_authn_spnego_ldap_validator_attributeValues) != '' %}
+cas.authn.spnego.ldap.validator.attributeValues={{ apereo_cas_authn.spnego.ldap.validator.attributeValues|default(apereo_cas_authn_spnego_ldap_validator_attributeValues) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ldap.validator.dn|default(apereo_cas_authn_spnego_ldap_validator_dn) != '' %}
+cas.authn.spnego.ldap.validator.dn={{ apereo_cas_authn.spnego.ldap.validator.dn|default(apereo_cas_authn_spnego_ldap_validator_dn) }}
+{% endif %}
+{% endif %}
+{% endif %}
+{% endif %}
+
+{% if apereo_cas_authn.ntlm is defined and apereo_cas_authn.ntlm.enable %}
+#
+# NTLM Authentication
+#
+{% if apereo_cas_authn.ntlm.includePattern|default(apereo_cas_authn_ntlm_includePattern) != '' %}
+cas.authn.ntlm.includePattern={{ apereo_cas_authn.ntlm.includePattern|default(apereo_cas_authn_ntlm_includePattern) }}
+{% endif %}
+{% if apereo_cas_authn.ntlm.loadBalance|default(apereo_cas_authn_ntlm_loadBalance) != '' %}
+cas.authn.ntlm.loadBalance={{ apereo_cas_authn.ntlm.loadBalance|default(apereo_cas_authn_ntlm_loadBalance) }}
+{% endif %}
+{% if apereo_cas_authn.ntlm.domainController|default(apereo_cas_authn_ntlm_domainController) != '' %}
+cas.authn.ntlm.domainController={{ apereo_cas_authn.ntlm.domainController|default(apereo_cas_authn_ntlm_domainController) }}
+{% endif %}
+{% if apereo_cas_authn.ntlm.name|default(apereo_cas_authn_ntlm_name) != '' %}
+cas.authn.ntlm.name={{ apereo_cas_authn.ntlm.name|default(apereo_cas_authn_ntlm_name) }}
+{% endif %}
+{% endif %}
 #
 # End of authentication block
 #
