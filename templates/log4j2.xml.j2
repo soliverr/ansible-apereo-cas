@@ -92,6 +92,7 @@
         <AsyncLogger name="org.openid4java" level="warn" />
         <AsyncLogger name="org.ldaptive" level="{{ apereo_cas_authn.ldap.loglevel|default(apereo_cas.log.authn_ldap|default(apereo_cas_loglevel_authn_ldap)) }}" />
         <AsyncLogger name="com.hazelcast" level="{{ apereo_cas_ticket_registry.hazelcast.loglevel|default(apereo_cas.log.hazelcast|default(apereo_cas_loglevel_hazelcast)) }}" />
+        <AsyncLogger name="jcifs.spnego" level="{{ apereo_cas_authn.spnego.loglevel|default(apereo_cas.log.authn_spnego|default(apereo_cas_loglevel_authn_spnego)) }}"/>
         <AsyncLogger name="org.apereo.spring" level="warn" />
 
         <!-- Log perf stats only to perfStats.log -->

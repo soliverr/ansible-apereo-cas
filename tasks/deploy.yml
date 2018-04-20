@@ -25,6 +25,7 @@
     owner: "{{ apereo_cas_user }}"
     group: "{{ apereo_cas_group }}"
     mode: 0644
+    backup: yes
 
 - name: Install standalone Apereo CAS server
   when: not _apereo_cas_war.stat.exists

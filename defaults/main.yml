@@ -75,6 +75,7 @@ apereo_cas_dname: "CN={{ apereo_cas_server_name }}, OU=Unknown, o=Unknown, L=Unk
 #
 apereo_cas_loglevel: 'warn'
 apereo_cas_loglevel_authn_ldap: "{{ apereo_cas_loglevel }}"
+apereo_cas_loglevel_authn_spnego: "{{ apereo_cas_loglevel }}"
 apereo_cas_loglevel_hazelcast: "{{ apereo_cas_loglevel }}"
 #
 # Logout
