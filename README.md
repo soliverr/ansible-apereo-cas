@@ -14,7 +14,7 @@ Ansible role to install and configure Apereo CAS.
     # Enable/disable upgrade
     apereo_cas_upgrade: true
     # Default logger level
-    apereo_cas_loglevel: 'info'
+    apereo_cas_log_level: 'info'
 
     # Service registry
     apereo_cas_service_registry:

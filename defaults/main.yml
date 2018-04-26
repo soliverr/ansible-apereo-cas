@@ -73,10 +73,11 @@ apereo_cas_dname: "CN={{ apereo_cas_server_name }}, OU=Unknown, o=Unknown, L=Unk
 #
 # Log levels
 #
-apereo_cas_loglevel: 'warn'
-apereo_cas_loglevel_authn_ldap: "{{ apereo_cas_loglevel }}"
-apereo_cas_loglevel_authn_spnego: "{{ apereo_cas_loglevel }}"
-apereo_cas_loglevel_hazelcast: "{{ apereo_cas_loglevel }}"
+apereo_cas_log_level: 'warn'
+apereo_cas_log_authn_ldap: "{{ apereo_cas_log_level }}"
+apereo_cas_log_authn_spnego: "{{ apereo_cas_log_level }}"
+apereo_cas_log_hazelcast: "{{ apereo_cas_log_level }}"
+apereo_cas_log_isLog4jAutoInitializationDisabled: 'true'
 #
 # Logout
 #
@@ -121,12 +122,15 @@ apereo_cas_authn_ntlm_name: ''
 #
 # Defaults for SPNEGO/Kerberos Authentication
 #
+apereo_cas_authn_spnego_kerberosConf_type: 'file:'
 apereo_cas_authn_spnego_kerberosConf: ''
+apereo_cas_authn_spnego_kerberosKeyTab: ''
 apereo_cas_authn_spnego_mixedModeAuthentication: 'false'
 apereo_cas_authn_spnego_cachePolicy: 600
 apereo_cas_authn_spnego_timeout: 300000
 apereo_cas_authn_spnego_jcifsServicePrincipal: 'HTTP/cas.example.com@EXAMPLE.COM'
 apereo_cas_authn_spnego_jcifsNetbiosWins: ''
+apereo_cas_authn_spnego_loginConf_type: 'file:'
 apereo_cas_authn_spnego_loginConf: ''
 apereo_cas_authn_spnego_ntlmAllowed: 'true'
 apereo_cas_authn_spnego_hostNamePatternString: '.+'

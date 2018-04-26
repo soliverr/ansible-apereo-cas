@@ -8,7 +8,7 @@
         -->
         <Property name="cas.log.dir" >{{ apereo_cas.log.location|default(apereo_cas_logs) }}</Property>
         <!-- To see more CAS specific logging, adjust this property to info or debug or run server with -Dcas.log.leve=debug -->
-        <Property name="cas.log.level" >{{ apereo_cas.log.level|default(apereo_cas_loglevel) }}</Property>
+        <Property name="cas.log.level" >{{ apereo_cas.log.level|default(apereo_cas_log_level) }}</Property>
     </Properties>
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
@@ -90,9 +90,9 @@
         <AsyncLogger name="com.ryantenney.metrics" level="warn" />
         <AsyncLogger name="net.jradius" level="warn" />
         <AsyncLogger name="org.openid4java" level="warn" />
-        <AsyncLogger name="org.ldaptive" level="{{ apereo_cas_authn.ldap.loglevel|default(apereo_cas.log.authn_ldap|default(apereo_cas_loglevel_authn_ldap)) }}" />
-        <AsyncLogger name="com.hazelcast" level="{{ apereo_cas_ticket_registry.hazelcast.loglevel|default(apereo_cas.log.hazelcast|default(apereo_cas_loglevel_hazelcast)) }}" />
-        <AsyncLogger name="jcifs.spnego" level="{{ apereo_cas_authn.spnego.loglevel|default(apereo_cas.log.authn_spnego|default(apereo_cas_loglevel_authn_spnego)) }}"/>
+        <AsyncLogger name="org.ldaptive" level="{{ apereo_cas_authn.ldap.loglevel|default(apereo_cas.log.authn_ldap|default(apereo_cas_log_authn_ldap)) }}" />
+        <AsyncLogger name="com.hazelcast" level="{{ apereo_cas_ticket_registry.hazelcast.loglevel|default(apereo_cas.log.hazelcast|default(apereo_cas_log_hazelcast)) }}" />
+        <AsyncLogger name="jcifs.spnego" level="{{ apereo_cas_authn.spnego.loglevel|default(apereo_cas.log.authn_spnego|default(apereo_cas_log_authn_spnego)) }}"/>
         <AsyncLogger name="org.apereo.spring" level="warn" />
 
         <!-- Log perf stats only to perfStats.log -->

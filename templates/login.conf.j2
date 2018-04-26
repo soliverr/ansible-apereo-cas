@@ -1,0 +1,8 @@
+{% if apereo_cas_authn.spnego.kerberosKeyTab|default(apereo_cas_authn_spnego_kerberosKeyTab) != '' %}
+jcifs.spnego.initiate {
+  com.sun.security.auth.module.Krb5LoginModule required storeKey=true useKeyTab=true keyTab="{{ apereo_cas_authn.spnego.kerberosKeyTab|default(apereo_cas_authn_spnego_kerberosKeyTab) }}";
+};
+jcifs.spnego.accept {
+  com.sun.security.auth.module.Krb5LoginModule required storeKey=true useKeyTab=true keyTab="{{ apereo_cas_authn.spnego.kerberosKeyTab|default(apereo_cas_authn_spnego_kerberosKeyTab) }}";
+};
+{% endif %}

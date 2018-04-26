@@ -13,7 +13,7 @@ server.contextPath={{ apereo_cas_server_context_path }}
 server.port={{ apereo_cas_server_port }}
 {% else %}
 #
-# Identify CAS Server 
+# Identify CAS Server
 #
 server.name=https://{{ apereo_cas.server_name|default(apereo_cas_server_name|default(ansible_fqdn)) }}:${server.port}
 server.prefix=${server.name}/${server.contextPath}
@@ -22,6 +22,18 @@ server.contextPath={{ apereo_cas.server_contextPath|default(apereo_cas_server_co
 #
 # By default and if you remove this setting, CAS runs on port 8080
 server.port={{ apereo_cas.server_port|default(apereo_cas_server_port|default(8080)) }}
+
+#
+# Logging
+#
+{% if apereo_cas_etc is defined and apereo_cas_logger_properties is defined %}
+logging.config=file:{{ apereo_cas_etc }}/{{ apereo_cas_logger_properties }}
+{% if apereo_cas.log is defined %}
+# server.contextParameters.isLog4jAutoInitializationDisabled={{ apereo_cas.log.isLog4jAutoInitializationDisabled|default(apereo_cas_log_isLog4jAutoInitializationDisabled) }}
+# Control log levels via properties
+# logging.level.org.apereo.cas={{ apereo_cas.log.level|default(apereo_cas_log_level) }}
+{% endif %}
+{% endif %}
 
 {% if apereo_cas.server_ssl is defined %}
 #
@@ -321,11 +333,26 @@ cas.authn.ldap[0].validateTimeout={{ apereo_cas_authn.ldap.validateTimeout|defau
 #
 # SPNEGO (Kerberos) Authentication
 #
+{% if apereo_cas_authn.spnego.kerberosRealm|default(apereo_cas_authn_spnego_kerberosRealm) != '' %}
+cas.authn.spnego.kerberosRealm={{ apereo_cas_authn.spnego.kerberosRealm|default(apereo_cas_authn_spnego_kerberosRealm) }}
+{% endif %}
 {% if apereo_cas_authn.spnego.kerberosConf|default(apereo_cas_authn_spnego_kerberosConf) != '' %}
-cas.authn.spnego.kerberosConf={{ apereo_cas_authn.spnego.kerberosConf|default(apereo_cas_authn_spnego_kerberosConf) }}
+cas.authn.spnego.kerberosConf={{ apereo_cas_authn.spnego.kerberosConf_type|default(apereo_cas_authn_spnego_kerberosConf_type) }}{{ apereo_cas_authn.spnego.kerberosConf|default(apereo_cas_authn_spnego_kerberosConf) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.kerberosKdc|default(apereo_cas_authn_spnego_kerberosKdc) != '' %}
+cas.authn.spnego.kerberosKdc={{ apereo_cas_authn.spnego.kerberosKdc|default(apereo_cas_authn_spnego_kerberosKdc) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.kerberosDebug|default(apereo_cas_authn_spnego_kerberosDebug) != '' %}
+cas.authn.spnego.kerberosDebug={{ apereo_cas_authn.spnego.kerberosDebug|default(apereo_cas_authn_spnego_kerberosDebug) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.loginConf|default(apereo_cas_authn_spnego_loginConf) != '' %}
+cas.authn.spnego.loginConf={{ apereo_cas_authn.spnego.loginConf_type|default(apereo_cas_authn_spnego_loginConf_type) }}{{ apereo_cas_authn.spnego.loginConf|default(apereo_cas_authn_spnego_loginConf) }}
 {% endif %}
 {% if apereo_cas_authn.spnego.mixedModeAuthentication|default(apereo_cas_authn_spnego_mixedModeAuthentication) != '' %}
 cas.authn.spnego.mixedModeAuthentication={{ apereo_cas_authn.spnego.mixedModeAuthentication|default(apereo_cas_authn_spnego_mixedModeAuthentication) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.send401OnAuthenticationFailure|default(apereo_cas_authn_spnego_send401OnAuthenticationFailure) != '' %}
+cas.authn.spnego.send401OnAuthenticationFailure={{ apereo_cas_authn.spnego.send401OnAuthenticationFailure|default(apereo_cas_authn_spnego_send401OnAuthenticationFailure) }}
 {% endif %}
 {% if apereo_cas_authn.spnego.cachePolicy|default(apereo_cas_authn_spnego_cachePolicy) != '' %}
 cas.authn.spnego.cachePolicy={{ apereo_cas_authn.spnego.cachePolicy|default(apereo_cas_authn_spnego_cachePolicy) }}
@@ -333,23 +360,41 @@ cas.authn.spnego.cachePolicy={{ apereo_cas_authn.spnego.cachePolicy|default(aper
 {% if apereo_cas_authn.spnego.timeout|default(apereo_cas_authn_spnego_timeout) != '' %}
 cas.authn.spnego.timeout={{ apereo_cas_authn.spnego.timeout|default(apereo_cas_authn_spnego_timeout) }}
 {% endif %}
+{% if apereo_cas_authn.spnego.jcifsDomain|default(apereo_cas_authn_spnego_jcifsDomain) != '' %}
+cas.authn.spnego.jcifsDomain={{ apereo_cas_authn.spnego.jcifsDomain|default(apereo_cas_authn_spnego_jcifsDomain) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.jcifsDomainController|default(apereo_cas_authn_spnego_jcifsDomainController) != '' %}
+cas.authn.spnego.jcifsDomainController={{ apereo_cas_authn.spnego.jcifsDomainController|default(apereo_cas_authn_spnego_jcifsDomainController) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.jcifsUsername|default(apereo_cas_authn_spnego_jcifsUsername) != '' %}
+cas.authn.spnego.jcifsUsername={{ apereo_cas_authn.spnego.jcifsUsername|default(apereo_cas_authn_spnego_jcifsUsername) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.jcifsPassword|default(apereo_cas_authn_spnego_jcifsPassword) != '' %}
+cas.authn.spnego.jcifsPassword={{ apereo_cas_authn.spnego.jcifsPassword|default(apereo_cas_authn_spnego_jcifsPassword) }}
+{% endif %}
 {% if apereo_cas_authn.spnego.jcifsServicePrincipal|default(apereo_cas_authn_spnego_jcifsServicePrincipal) != '' %}
 cas.authn.spnego.jcifsServicePrincipal={{ apereo_cas_authn.spnego.jcifsServicePrincipal|default(apereo_cas_authn_spnego_jcifsServicePrincipal) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.jcifsServicePassword|default(apereo_cas_authn_spnego_jcifsServicePassword) != '' %}
+cas.authn.spnego.jcifsServicePassword={{ apereo_cas_authn.spnego.jcifsServicePassword|default(apereo_cas_authn_spnego_jcifsServicePassword) }}
 {% endif %}
 {% if apereo_cas_authn.spnego.jcifsNetbiosWins|default(apereo_cas_authn_spnego_jcifsNetbiosWins) != '' %}
 cas.authn.spnego.jcifsNetbiosWins={{ apereo_cas_authn.spnego.jcifsNetbiosWins|default(apereo_cas_authn_spnego_jcifsNetbiosWins) }}
 {% endif %}
-{% if apereo_cas_authn.spnego.loginConf|default(apereo_cas_authn_spnego_loginConf) != '' %}
-cas.authn.spnego.loginConf={{ apereo_cas_authn.spnego.loginConf|default(apereo_cas_authn_spnego_loginConf) }}
-{% endif %}
 {% if apereo_cas_authn.spnego.ntlmAllowed|default(apereo_cas_authn_spnego_ntlmAllowed) != '' %}
 cas.authn.spnego.ntlmAllowed={{ apereo_cas_authn.spnego.ntlmAllowed|default(apereo_cas_authn_spnego_ntlmAllowed) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ntlm|default(apereo_cas_authn_spnego_ntlm) != '' %}
+cas.authn.spnego.ntlm={{ apereo_cas_authn.spnego.ntlm|default(apereo_cas_authn_spnego_ntlm) }}
+{% endif %}
+{% if apereo_cas_authn.spnego.ipsToCheckPattern|default(apereo_cas_authn_spnego_ipsToCheckPattern) != '' %}
+cas.authn.spnego.ipsToCheckPattern={{ apereo_cas_authn.spnego.ipsToCheckPattern|default(apereo_cas_authn_spnego_ipsToCheckPattern) }}
 {% endif %}
 {% if apereo_cas_authn.spnego.hostNamePatternString|default(apereo_cas_authn_spnego_hostNamePatternString) != '' %}
 cas.authn.spnego.hostNamePatternString={{ apereo_cas_authn.spnego.hostNamePatternString|default(apereo_cas_authn_spnego_hostNamePatternString) }}
 {% endif %}
-{% if apereo_cas_authn.spnego.jcifsUsername|default(apereo_cas_authn_spnego_jcifsUsername) != '' %}
-cas.authn.spnego.jcifsUsername={{ apereo_cas_authn.spnego.jcifsUsername|default(apereo_cas_authn_spnego_jcifsUsername) }}
+{% if apereo_cas_authn.spnego.hostNameClientActionStrategy|default(apereo_cas_authn_spnego_hostNameClientActionStrategy) != '' %}
+cas.authn.spnego.hostNameClientActionStrategy={{ apereo_cas_authn.spnego.hostNameClientActionStrategy|default(apereo_cas_authn_spnego_hostNameClientActionStrategy) }}
 {% endif %}
 {% if apereo_cas_authn.spnego.useSubjectCredsOnly|default(apereo_cas_authn_spnego_useSubjectCredsOnly) != '' %}
 cas.authn.spnego.useSubjectCredsOnly={{ apereo_cas_authn.spnego.useSubjectCredsOnly|default(apereo_cas_authn_spnego_useSubjectCredsOnly) }}
@@ -357,47 +402,14 @@ cas.authn.spnego.useSubjectCredsOnly={{ apereo_cas_authn.spnego.useSubjectCredsO
 {% if apereo_cas_authn.spnego.supportedBrowsers|default(apereo_cas_authn_spnego_supportedBrowsers) != '' %}
 cas.authn.spnego.supportedBrowsers={{ apereo_cas_authn.spnego.supportedBrowsers|default(apereo_cas_authn_spnego_supportedBrowsers) }}
 {% endif %}
-{% if apereo_cas_authn.spnego.jcifsDomainController|default(apereo_cas_authn_spnego_jcifsDomainController) != '' %}
-cas.authn.spnego.jcifsDomainController={{ apereo_cas_authn.spnego.jcifsDomainController|default(apereo_cas_authn_spnego_jcifsDomainController) }}
-{% endif %}
 {% if apereo_cas_authn.spnego.dnsTimeout|default(apereo_cas_authn_spnego_dnsTimeout) != '' %}
 cas.authn.spnego.dnsTimeout={{ apereo_cas_authn.spnego.dnsTimeout|default(apereo_cas_authn_spnego_dnsTimeout) }}
-{% endif %}
-{% if apereo_cas_authn.spnego.hostNameClientActionStrategy|default(apereo_cas_authn_spnego_hostNameClientActionStrategy) != '' %}
-cas.authn.spnego.hostNameClientActionStrategy={{ apereo_cas_authn.spnego.hostNameClientActionStrategy|default(apereo_cas_authn_spnego_hostNameClientActionStrategy) }}
-{% endif %}
-{% if apereo_cas_authn.spnego.kerberosKdc|default(apereo_cas_authn_spnego_kerberosKdc) != '' %}
-cas.authn.spnego.kerberosKdc={{ apereo_cas_authn.spnego.kerberosKdc|default(apereo_cas_authn_spnego_kerberosKdc) }}
 {% endif %}
 {% if apereo_cas_authn.spnego.alternativeRemoteHostAttribute|default(apereo_cas_authn_spnego_alternativeRemoteHostAttribute) != '' %}
 cas.authn.spnego.alternativeRemoteHostAttribute={{ apereo_cas_authn.spnego.alternativeRemoteHostAttribute|default(apereo_cas_authn_spnego_alternativeRemoteHostAttribute) }}
 {% endif %}
-{% if apereo_cas_authn.spnego.jcifsDomain|default(apereo_cas_authn_spnego_jcifsDomain) != '' %}
-cas.authn.spnego.jcifsDomain={{ apereo_cas_authn.spnego.jcifsDomain|default(apereo_cas_authn_spnego_jcifsDomain) }}
-{% endif %}
-{% if apereo_cas_authn.spnego.ipsToCheckPattern|default(apereo_cas_authn_spnego_ipsToCheckPattern) != '' %}
-cas.authn.spnego.ipsToCheckPattern={{ apereo_cas_authn.spnego.ipsToCheckPattern|default(apereo_cas_authn_spnego_ipsToCheckPattern) }}
-{% endif %}
-{% if apereo_cas_authn.spnego.kerberosDebug|default(apereo_cas_authn_spnego_kerberosDebug) != '' %}
-cas.authn.spnego.kerberosDebug={{ apereo_cas_authn.spnego.kerberosDebug|default(apereo_cas_authn_spnego_kerberosDebug) }}
-{% endif %}
-{% if apereo_cas_authn.spnego.send401OnAuthenticationFailure|default(apereo_cas_authn_spnego_send401OnAuthenticationFailure) != '' %}
-cas.authn.spnego.send401OnAuthenticationFailure={{ apereo_cas_authn.spnego.send401OnAuthenticationFailure|default(apereo_cas_authn_spnego_send401OnAuthenticationFailure) }}
-{% endif %}
-{% if apereo_cas_authn.spnego.kerberosRealm|default(apereo_cas_authn_spnego_kerberosRealm) != '' %}
-cas.authn.spnego.kerberosRealm={{ apereo_cas_authn.spnego.kerberosRealm|default(apereo_cas_authn_spnego_kerberosRealm) }}
-{% endif %}
-{% if apereo_cas_authn.spnego.ntlm|default(apereo_cas_authn_spnego_ntlm) != '' %}
-cas.authn.spnego.ntlm={{ apereo_cas_authn.spnego.ntlm|default(apereo_cas_authn_spnego_ntlm) }}
-{% endif %}
 {% if apereo_cas_authn.spnego.principalWithDomainName|default(apereo_cas_authn_spnego_principalWithDomainName) != '' %}
 cas.authn.spnego.principalWithDomainName={{ apereo_cas_authn.spnego.principalWithDomainName|default(apereo_cas_authn_spnego_principalWithDomainName) }}
-{% endif %}
-{% if apereo_cas_authn.spnego.jcifsServicePassword|default(apereo_cas_authn_spnego_jcifsServicePassword) != '' %}
-cas.authn.spnego.jcifsServicePassword={{ apereo_cas_authn.spnego.jcifsServicePassword|default(apereo_cas_authn_spnego_jcifsServicePassword) }}
-{% endif %}
-{% if apereo_cas_authn.spnego.jcifsPassword|default(apereo_cas_authn_spnego_jcifsPassword) != '' %}
-cas.authn.spnego.jcifsPassword={{ apereo_cas_authn.spnego.jcifsPassword|default(apereo_cas_authn_spnego_jcifsPassword) }}
 {% endif %}
 {% if apereo_cas_authn.spnego.spnegoAttributeName|default(apereo_cas_authn_spnego_spnegoAttributeName) != '' %}
 cas.authn.spnego.spnegoAttributeName={{ apereo_cas_authn.spnego.spnegoAttributeName|default(apereo_cas_authn_spnego_spnegoAttributeName) }}

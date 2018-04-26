@@ -39,22 +39,67 @@
     mode: 0640
     backup: yes
 
+- name: Create Kerberos configuration file for standalone Apereo CAS server
+  when:
+    - apereo_cas_authn is defined 
+    - apereo_cas_authn.spnego is defined
+    - apereo_cas_authn.spnego.enable
+    - apereo_cas_authn.spnego.kerberosConf|default(apereo_cas_authn_spnego_kerberosConf) != ''
+  template:
+    src: "krb5.conf.j2"
+    dest: "{{ apereo_cas_authn.spnego.kerberosConf|default(apereo_cas_authn_spnego_kerberosConf) }}"
+    owner: "{{ apereo_cas_user }}"
+    group: "{{ apereo_cas_group }}"
+    mode: 0640
+    backup: yes
+
+#
+# FIXME: Copy Kerberos KeyTab src file to target server
+#
+
+- name: Create Kerberos login configuration file for standalone Apereo CAS server
+  when: 
+    - apereo_cas_authn is defined
+    - apereo_cas_authn.spnego is defined
+    - apereo_cas_authn.spnego.enable
+    - apereo_cas_authn.spnego.loginConf|default(apereo_cas_authn_spnego_loginConf) != ''
+    - apereo_cas_authn.spnego.kerberosKeyTab|default(apereo_cas_authn_spnego_kerberosKeyTab) != ''
+  template:
+    src: "login.conf.j2"
+    dest: "{{ apereo_cas_authn.spnego.loginConf|default(apereo_cas_authn_spnego_loginConf) }}"
+    owner: "{{ apereo_cas_user }}"
+    group: "{{ apereo_cas_group }}"
+    mode: 0640
+    backup: yes
+
+# FIXME: parameters hierarchy for keystore
 - name: Create standalone keystore
-  when: not _apereo_cas_keystore.stat.exists
+  when:
+    - not _apereo_cas_keystore.stat.exists
+    - apereo_cas.server_ssl is defined
+    - apereo_cas.server_ssl.enable|default(apereo_cas_server_ssl_enable)
   command: >
      {{ apereo_cas_java_home }}/bin/keytool -genkey -noprompt -alias {{ apereo_cas_service }} -keyalg RSA -validity 3650 -keysize 2048 -keystore {{ apereo_cas_keystore }} -keypass {{ apereo_cas_server_ssl_password }} -storepass {{ apereo_cas_server_ssl_password }} -dname "{{ apereo_cas_dname }}" -ext san=dns:{{ apereo_cas_server_name }}
   args:
     creates: "{{ apereo_cas_keystore }}"
 
+# FIXME: parameters hierarchy for keystore
 - name: Export servers certificate from keystore
-  when: not _apereo_cas_keystore.stat.exists
+  when:
+    - not _apereo_cas_keystore.stat.exists
+    - apereo_cas.server_ssl is defined
+    - apereo_cas.server_ssl.enable|default(apereo_cas_server_ssl_enable)
   command: >
      {{ apereo_cas_java_home }}/bin/keytool -export -noprompt -file {{ apereo_cas_etc }}/{{ apereo_cas_service }}.crt -alias {{ apereo_cas_service }} -keystore {{ apereo_cas_keystore }} -keypass {{ apereo_cas_server_ssl_password }} -storepass {{ apereo_cas_server_ssl_password }} 
   args:
     creates: "{{ apereo_cas_etc }}/{{ apereo_cas_service }}.crt"
 
+# FIXME: parameters hierarchy for keystore
 - name: Import servers certificate into system JDK trusted key store
-  when: not _apereo_cas_keystore.stat.exists
+  when:
+    - not _apereo_cas_keystore.stat.exists
+    - apereo_cas.server_ssl is defined
+    - apereo_cas.server_ssl.enable|default(apereo_cas_server_ssl_enable)
   command: >
      {{ apereo_cas_java_home }}/bin/keytool -import  -noprompt -file {{ apereo_cas_etc }}/{{ apereo_cas_service }}.crt -alias {{ apereo_cas_service }} -keystore {{ apereo_cas_java_home }}/jre/lib/security/cacerts
 

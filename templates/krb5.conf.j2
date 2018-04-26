@@ -1,0 +1,20 @@
+[libdefaults]
+ default_realm = {{ apereo_cas_authn.spnego.kerberosRealm|default(apereo_cas_authn_spnego_kerberosRealm)|upper }}
+{% if apereo_cas_authn.spnego.kerberosKeyTab|default(apereo_cas_authn_spnego_kerberosKeyTab) != '' %}
+ default_keytab_name={{ apereo_cas_authn.spnego.kerberosKeyTab|default(apereo_cas_authn_spnego_kerberosKeyTab) }}
+{% endif %}
+ dns_lookup_realm = false
+ dns_lookup_kdc = false
+ ticket_lifetime = 24000
+ default_tkt_enctypes = rc4-hmac
+ default_tgs_enctypes = rc4-hmac
+
+[realms]
+ {{ apereo_cas_authn.spnego.kerberosRealm|default(apereo_cas_authn_spnego_kerberosRealm)|upper }} = {
+  kdc = {{ apereo_cas_authn.spnego.kerberosKdc|default(apereo_cas_authn_spnego_kerberosKdc) }}
+ }
+
+[domain_realm]
+ .{{ apereo_cas_authn.spnego.kerberosRealm|default(apereo_cas_authn_spnego_kerberosRealm)|lower }} = {{ apereo_cas_authn.spnego.kerberosRealm|default(apereo_cas_authn_spnego_kerberosRealm)|upper }}
+ {{ apereo_cas_authn.spnego.kerberosRealm|default(apereo_cas_authn_spnego_kerberosRealm)|lower }} = {{ apereo_cas_authn.spnego.kerberosRealm|default(apereo_cas_authn_spnego_kerberosRealm)|upper }}
+
