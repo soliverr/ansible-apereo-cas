@@ -53,12 +53,24 @@
     mode: 0640
     backup: yes
 
-#
-# FIXME: Copy Kerberos KeyTab src file to target server
-#
+- name: Copy custom Kerberos keytab file
+  when:
+    - apereo_cas_authn is defined
+    - apereo_cas_authn.spnego is defined
+    - apereo_cas_authn.spnego.enable
+    - apereo_cas_authn.spnego.kerberosKeyTabSource is defined
+    - apereo_cas_authn.spnego.kerberosKeyTabSource != ''
+    - apereo_cas_authn.spnego.kerberosKeyTab|default(apereo_cas_authn_spnego_kerberosKeyTab) != ''
+  copy:
+    src: "{{ apereo_cas_authn.spnego.kerberosKeyTabSource }}"
+    dest: "{{ apereo_cas_authn.spnego.kerberosKeyTab }}"
+    owner: "{{ apereo_cas_user }}"
+    group: "{{ apereo_cas_group }}"
+    mode: 0640
+    backup: yes
 
 - name: Create Kerberos login configuration file for standalone Apereo CAS server
-  when: 
+  when:
     - apereo_cas_authn is defined
     - apereo_cas_authn.spnego is defined
     - apereo_cas_authn.spnego.enable
