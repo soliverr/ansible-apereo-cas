@@ -63,11 +63,28 @@
     - apereo_cas_authn.spnego.kerberosKeyTab|default(apereo_cas_authn_spnego_kerberosKeyTab) != ''
   copy:
     src: "{{ apereo_cas_authn.spnego.kerberosKeyTabSource }}"
-    dest: "{{ apereo_cas_authn.spnego.kerberosKeyTab }}"
+    dest: "{{ apereo_cas_authn.spnego.kerberosKeyTab|default(apereo_cas_authn_spnego_kerberosKeyTab) }}"
     owner: "{{ apereo_cas_user }}"
     group: "{{ apereo_cas_group }}"
     mode: 0640
     backup: yes
+
+# Work around for Cannot find key of appropriate type to decrypt AP REP - RC4 with HMAC
+- name: Make symlink for Kerberos keytab in user Home directory
+  when:
+    - apereo_cas_authn is defined
+    - apereo_cas_authn.spnego is defined
+    - apereo_cas_authn.spnego.enable
+    - apereo_cas_authn.spnego.kerberosKeyTabSource is defined
+    - apereo_cas_authn.spnego.kerberosKeyTabSource != ''
+    - apereo_cas_authn.spnego.kerberosKeyTab|default(apereo_cas_authn_spnego_kerberosKeyTab) != ''
+  file:
+    state: link
+    src: "{{ apereo_cas_authn.spnego.kerberosKeyTab|default(apereo_cas_authn_spnego_kerberosKeyTab) }}"
+    dest: "{{ '/root' if apereo_cas_user == 'root' else '/home/' + apereo_cas_user }}/krb5.keytab"
+    owner: "{{ apereo_cas_user }}"
+    group: "{{ apereo_cas_group }}"
+    mode: 0640
 
 - name: Create Kerberos login configuration file for standalone Apereo CAS server
   when:
